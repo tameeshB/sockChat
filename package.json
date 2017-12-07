@@ -1,0 +1,23 @@
+{
+  "name": "socketchat",
+  "version": "1.0.0",
+  "description": "Chat app using sockets.io on node.js and express",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tameeshB/sockChat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tameeshB/sockChat/issues"
+  },
+  "homepage": "https://github.com/tameeshB/sockChat#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4"
+  }
+}
