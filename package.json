@@ -19,9 +19,20 @@
   "dependencies": {
     "body-parser": "*",
     "ejs": "^2.5.7",
-    "express": "^4.16.2",
-    "mongojs": "^2.4.1",
     "path": "*",
-    "socket.io": "^2.0.4"
+    "socket.io": "^2.0.4",
+    "bcryptjs": "*",
+    "connect-flash": "*",
+    "express": "^4.16.2",
+    "express-handlebars": "*",
+    "express-messages": "*",
+    "express-session": "*",
+    "express-validator": "*",
+    "mongojs": "^2.4.1",
+    "mongodb": "*",
+    "mongoose": "*",
+    "passport": "^0.4.0",
+    "passport-http": "*",
+    "passport-local": "*"
   }
 }
