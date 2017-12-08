@@ -1,0 +1,76 @@
+<html>
+	<head>
+		<title>
+			Welcome to sockchat.
+		</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<style>
+			body{
+				margin:20px;
+			}
+			#postLogin{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>SockChat</h1>
+			<div class="row" id="userFormArea">
+				<div class="col-sm-8">
+					<form id="userForm" method="post" action="/api/register">
+						<% if (errors) { %>
+						<div class="alert alert-danger">
+						  <strong>Error!</strong>
+						  <ul>
+						  <% errors.forEach(function(err){%>
+							<li><%= err.msg %></li>	
+						  <%}); %>
+						  </ul>
+						</div>
+						<% } %>
+						<label for="user">Name:</label>
+						<input name="name" id="name" class="form-control" placeholder="Name"><br>
+						<label for="user">Username:</label>
+						<input name="uname" id="uname" class="form-control" placeholder="Username"><br>
+						<label for="email">Email:</label>
+						<input name="email" id="email" class="form-control"  placeholder="Email"><br>
+						<label for="password">Password:</label>
+						<input name="password" type="password" id="pass" class="form-control" placeholder="password" ><br>
+						<label for="password_">Confirm Password:</label>
+						<input name="password_" type="password" id="pass_" class="form-control" placeholder="password"><br>
+						<input type="submit"  class="btn btn-success" value="Register:">
+					</form>
+				</div>
+			</div>
+		</div>
+		<script>
+			// var prev = JSON.parse('<%- data %>');
+			// console.log(prev);
+			// prev.forEach(function(index,value){
+			// 	if(value!=''){
+			// 		$("[name='"+index+"']").val(value);
+			// 	} 
+			// });
+			<% for(var prop in data){%>
+				<% if(data[prop]!=''){%>
+					$("[name='<%= prop %>']").val('<%= data[prop] %>');
+				<% } %>
+			<% } %>
+			// $(".form-control").focus(function(){
+			// 	if($(this).val()==$(this).attr('placeholder')){
+			// 		$(this).val('');
+			// 	}
+			// });
+			// $(".form-control").blur(function(){
+			// 	if($(this).val()==''){
+			// 		$(this).val($(this).attr('placeholder'));
+			// 	}
+			// });
+		</script>
+	</body>
+</html>

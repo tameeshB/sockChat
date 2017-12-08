@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<title>
+			Welcome to sockchat.
+		</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<style>
+			body{
+				margin:20px;
+			}
+			#postLogin{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>SockChat</h1>
+			<div class="row" id="userFormArea">
+				<div class="col-sm-12">
+					<form id="userForm" method="post" action="/api/login">
+						<label for="user">Username:</label>
+						<input name="user" id="uname" class="form-control" id="name" placeholder="username"><br>
+						<label for="password">Password:</label>
+						<input name="password" id="pass" class="form-control" id="pass" placeholder="password"><br>
+						<input type="submit" class="btn btn-success" value="Login:">
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
