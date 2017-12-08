@@ -1,15 +1,38 @@
 var express = require('express');
 var app = express();
+var bodyP = require('body-parser');
+var path = require('path');
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 
+var mongojs = require('mongojs');
+var ObjectId = mongojs.ObjectId;
+
+var db = mongojs('sockchat', ['messages']);
+
+
+app.set('view engine','ejs');
+app.set('views',path.join(__dirname,'views'));
+
+app.use(bodyP.json());
+app.use(bodyP.urlencoded({extended: false}));
+app.use(express.static(path.join(__dirname,'public')));
+
+
 server.listen(process.env.PORT || 3000);
+
+
 var users = [];
 var connections= [];
 console.log('Server running');
 app.get('/',function(req,res){
-	res.sendFile(__dirname+'/index.html');
+	// res.sendFile(__dirname+'/index.html');
+	db.messages.find(function(err, docs){
+		res.render('index',{messages:docs});
+	});
 });
+
+
 
 io.sockets.on('connection',function(socket){
 	connections.push(socket);
@@ -26,6 +49,15 @@ io.sockets.on('connection',function(socket){
 	//send message
 	socket.on('send message',function(data){
 		console.log(data);
+		var msgObj = {
+			user : socket.username,
+			message: data,
+			ts: Date()
+		};
+		db.messages.insert(msgObj,function(err,result){
+			if(err)
+				console.log(err);
+		});
 		io.sockets.emit('new message',{msg:data,user:socket.username});
 	});
 

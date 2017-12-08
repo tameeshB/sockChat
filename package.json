@@ -17,7 +17,11 @@
   },
   "homepage": "https://github.com/tameeshB/sockChat#readme",
   "dependencies": {
+    "body-parser": "*",
+    "ejs": "^2.5.7",
     "express": "^4.16.2",
+    "mongojs": "^2.4.1",
+    "path": "*",
     "socket.io": "^2.0.4"
   }
 }
