@@ -1,9 +1,11 @@
-var express = require('express');
-var router = express.Router();
-var mongojs = require('mongojs');
-var db = mongojs('sockchat', ['messages']);
+module.exports = function(app, passport, db) {
 
+	 app.get('/',function(req,res){
+		// res.sendFile(__dirname+'/index.html');
+		db.messages.find(function(err, docs){
+			res.render('index',{messages:docs});
+		});
+	});
+
+}
 //get homepage
-
-
-module.exports = router;

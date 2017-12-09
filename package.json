@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/tameeshB/sockChat#readme",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "bcryptjs": "*",
     "body-parser": "*",
     "connect-flash": "*",
@@ -25,16 +26,19 @@
     "express": "^4.16.2",
     "express-handlebars": "*",
     "express-messages": "*",
-    "express-session": "*",
+    "express-session": "^1.15.6",
     "express-validator": "*",
+    "method-override": "^2.3.10",
     "mongodb": "*",
     "mongojs": "^2.4.1",
     "mongoose": "*",
+    "morgan": "^1.9.0",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
     "passport-google": "^0.3.0",
     "passport-http": "*",
     "passport-local": "*",
+    "passport-twitter": "*",
     "path": "*",
     "socket.io": "^2.0.4"
   }
