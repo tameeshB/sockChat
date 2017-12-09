@@ -20,8 +20,18 @@ var configDB = require('./config/database.js');
 var morgan       = require('morgan');
 var session      = require('express-session');
 
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+//db connections
 var db = mongojs('sockchat', ['messages']);
+mongoose.connect(configDB.url, {
+  useMongoClient: true,
+}); 
+require('./config/passport')(passport);
+
 var port = process.env.PORT || 3000;
+
 app.set('view engine','ejs');
 app.set('views',path.join(__dirname,'views'));
 
@@ -52,13 +62,15 @@ app.use(expressValidator({
   }
 }));
 
+
+
 //routing
 require('./routes/index.js')(app, passport, db);
 require('./routes/users.js')(app, passport, db);
 
-app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-app.use(flash()); // use connect-flash for flash messages stored in session
+
+ // persistent login sessions
+ // use connect-flash for flash messages stored in session
 
 // app.listen(port);
 

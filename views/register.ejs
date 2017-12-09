@@ -23,6 +23,17 @@
 			<div class="row" id="userFormArea">
 				<div class="col-sm-8">
 					<form id="userForm" method="post" action="/api/register">
+						<% if(valErrors.length>0){%>
+							<div class="alert alert-danger"><strong>Error! </strong>
+								<ul>
+								  <% valErrors.forEach(function(valError){%>
+									<li><%= valError.msg %></li>	
+								  <%}); %>
+								</ul></div>
+						<%}%>
+						<% if (message.length > 0) { %>
+						        <div class="alert alert-danger"><%= message %></div>
+						    <% } %>
 						<% if (errors) { %>
 						<div class="alert alert-danger">
 						  <strong>Error!</strong>
@@ -61,6 +72,26 @@
 					$("[name='<%= prop %>']").val('<%= data[prop] %>');
 				<% } %>
 			<% } %>
+
+			// $("#userForm").submit(function(e) {
+			// 	e.preventDefault();
+			// 	$.ajax({
+			// 	  type:'POST'
+			// 	  url: "/api/register",
+			// 	  data:{
+			// 	  	uname: $("[name='uname']").val(),
+			// 	  	name: $("[name='name']").val(),
+			// 	  	email: $("[name='email']").val(),
+			// 	  	password: $("[name='password']").val(),
+			// 	  	password_: $("[name='password_']").val(),
+			// 	  }
+			// 	}).done(function(data) {
+
+			// 	  $("#userForm").prepend('<div class="alert alert-danger"></div>');
+			// 	});
+			// })
+
+
 			// $(".form-control").focus(function(){
 			// 	if($(this).val()==$(this).attr('placeholder')){
 			// 		$(this).val('');

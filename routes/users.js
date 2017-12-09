@@ -2,20 +2,67 @@ module.exports = function(app, passport, db) {
 
 	//user
 	app.get('/login',function(req,res){
-		res.render('login');
+		res.render('login',{message:req.flash('loginMessage')});
 		
 	});
 	app.get('/register',function(req,res){
-		var defaults = {
-			name : '',
-			uname : '',
-			email : ''
-		};
-		res.render('register',{data:defaults,errors:null});
+		if(!req.flash('prev')){
+			//flash init
+			var prev = {
+				name : '',
+				uname : '',
+				email : ''
+			};
+			req.flash('prev', prev);
+		}
+		res.render('register',{
+			data: req.flash('prev'),
+			errors : null,
+			valErrors : req.flash('valErrors'),
+			message : req.flash('signupMessage') 
+		});
 		
 	});
 
-	app.post('/api/register',function(req,res){
+	app.post('/api/register',isValidSignup, passport.authenticate('local-signup', {
+        successRedirect : '/profile', 
+        failureRedirect : '/register', 
+        failureFlash : true 
+    }));
+
+    app.post('/api/login', passport.authenticate('local-login', {
+           successRedirect : '/profile', 
+           failureRedirect : '/login',
+           failureFlash : true
+       }));
+
+
+	app.get('/profile', isLoggedIn, function(req, res) {
+	    res.render('profile.ejs', {
+	        user : req.user
+	    });
+	});
+
+	 app.get('/logout',isLoggedIn, function(req, res) {
+        req.logout();
+        res.redirect('/');
+    });
+
+	function isLoggedIn(req, res, next) {
+
+	    // if user is authenticated in the session, carry on 
+	    console.log('check auth');
+	    if (req.isAuthenticated()){
+	    	console.log('isauth');
+	        return next();
+	    }
+	    console.log('isNOTauth');
+
+	    // if they aren't redirect them to the home page
+	    res.redirect('/');
+	}
+
+	function isValidSignup(req, res, next){
 		var name = req.body.name;
 		var email = req.body.email;
 		var username = req.body.uname;
@@ -31,31 +78,20 @@ module.exports = function(app, passport, db) {
 		req.checkBody('password','Password is required.').notEmpty();
 		req.checkBody('password_','Password Confirmation does not equal password.').equals(req.body.password);
 		var errors = req.validationErrors();
-
 		if(errors){
-			console.log(errors);
-			var userDat = {
+			var prev = {
 				name : name,
 				uname : username,
 				email : email
 			};
-			res.render('register',{data:userDat,errors:errors});
-		} else{
-			//register
-			res.redirect('/');
+			req.flash('valErrors', errors);
+			req.flash('prev', prev);
+			res.redirect('/register');
+			//if api
+			// res.json({status:400,errors:errors});
 		}
-		
-	});
-
-	function isLoggedIn(req, res, next) {
-
-	    // if user is authenticated in the session, carry on 
-	    if (req.isAuthenticated())
-	        return next();
-
-	    // if they aren't redirect them to the home page
-	    res.redirect('/');
+		else
+			return next();
 	}
-
 }
 //get homepage
