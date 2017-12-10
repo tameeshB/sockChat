@@ -13,8 +13,11 @@
 }
 @media only screen and (max-width: 900px) {
 	#header_logo{
+		position: absolute;
 		width:30px;
 		height:30px;
+		top: 10px;
+		left: 10px;
 	}
 	#sockChat {
 		top: 10px;
@@ -24,7 +27,7 @@
 
 	#sockChat h1 {
 		font-size: 25px;
-		position: fixed;
+		position: absolute;
 		left: 40px;
 		vertical-align: middle;
 		top: 10px;
@@ -34,4 +37,7 @@
 	#sockChat {
 		position: fixed;
 	}
+}
+body{
+	overflow-x: hidden;
 }
