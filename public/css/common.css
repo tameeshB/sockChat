@@ -1,5 +1,4 @@
 #sockChat{
-	position: fixed;
 	top:10px;
 	left:10px;
 	display: inline;
@@ -11,4 +10,28 @@
     vertical-align: middle;
     top: 10px;
 
+}
+@media only screen and (max-width: 900px) {
+	#header_logo{
+		width:30px;
+		height:30px;
+	}
+	#sockChat {
+		top: 10px;
+		left: 10px;
+		display: inline;
+	}
+
+	#sockChat h1 {
+		font-size: 25px;
+		position: fixed;
+		left: 40px;
+		vertical-align: middle;
+		top: 10px;
+	}
+}
+@media only screen and (min-width: 900px) {
+	#sockChat {
+		position: fixed;
+	}
 }
