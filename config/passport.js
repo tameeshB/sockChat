@@ -52,6 +52,7 @@ module.exports = function(passport){
                 newUser.save(function(err) {
                     if (err)
                         throw err;
+                    req.flash('loginMessage', 'You are registered! Login here to continue!');
                     return done(null, newUser);
                 });
             }

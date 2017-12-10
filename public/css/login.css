@@ -1,12 +1,12 @@
 html,body {
   font-family: 'Open Sans', serif;
   font-size: 14px;
-  background-image: url('/images/login_bg.jpg'); 
+  background-image: url('/images/login_bg_blue.jpg'); 
   
   font-weight: 300;
 }
 #main{
-  background-image: url('/images/login_bg.jpg'); 
+  background-image: url('/images/login_bg_blue.jpg');
 }
 .hero.is-success {
   background: #F2F6FA;

@@ -1,64 +1,106 @@
-<html>
-	<head>
-		<title>
-			Welcome to sockchat.
-		</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-		 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-		 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
-		<style>
-			body{
-				margin:20px;
-			}
-			#postLogin{
-				display: none; 
-			}
-		</style>
+<%- include head.ejs %>
+	<title>Login|SockChat</title>
+	<link rel="stylesheet" type="text/css" href="/css/login.css">
 	</head>
+
 	<body>
-		<div class="container">
-			<h1>SockChat</h1>
-			<div class="row" id="userFormArea">
-				<div class="col-sm-8">
-					<form id="userForm" method="post" action="/api/register">
-						<% if(valErrors.length>0){%>
-							<div class="alert alert-danger"><strong>Error! </strong>
-								<ul>
-								  <% valErrors.forEach(function(valError){%>
-									<li><%= valError.msg %></li>	
-								  <%}); %>
-								</ul></div>
-						<%}%>
-						<% if (message.length > 0) { %>
-						        <div class="alert alert-danger"><%= message %></div>
-						    <% } %>
-						<% if (errors) { %>
-						<div class="alert alert-danger">
-						  <strong>Error!</strong>
-						  <ul>
-						  <% errors.forEach(function(err){%>
-							<li><%= err.msg %></li>	
-						  <%}); %>
-						  </ul>
+		<section class="hero is-success is-fullheight" id="main">
+			<div id="sockChat" class="title">
+				<a href="/">
+					<img src="/images/logo/icon48.png" id="header_logo" alt="">
+					<h1>
+						<b>ock</b>Chat</h1>
+				</a>
+			</div>
+			<div class="hero-body">
+				<div class="container has-text-centered" id="mainArea">
+					<div class="column is-4 is-offset-4">
+						<h3 class="title has-text-grey">Register</h3>
+						<p class="subtitle has-text-grey">Create an account to use SockChat.</p>
+						<br>
+						<div class="box">
+							<figure class="avatar">
+								<img src="/images/logo/icon144.png">
+							</figure>
+							<form action="/api/register" method="post">
+								<br>
+								<br>
+								<% if(valErrors.length>0){%>
+									<div class="notification is-danger">
+										<strong>Error! </strong>
+										<ul>
+											<% valErrors.forEach(function(valError){%>
+												<li>
+													<%= valError.msg %>
+												</li>
+												<%}); %>
+										</ul>
+									</div>
+									<%}%>
+										
+									<% if (errors) { %>
+										<div class="notification is-danger">
+											<strong>Error!</strong>
+											<ul>
+												<% errors.forEach(function(err){%>
+													<li>
+														<%= err.msg %>
+													</li>
+													<%}); %>
+											</ul>
+										</div>
+										<% } %>
+								<% if (message.length > 0) { %>
+									<div class="notification is-danger">
+										<%= message%>
+									</div>
+									<% } %>
+
+										<div class="field">
+											<div class="control">
+												<input class="input is-large" type="text" name="name" placeholder="Name" autofocus="">
+											</div>
+										</div>
+										<div class="field">
+											<div class="control">
+												<input class="input is-large" type="text" name="uname" placeholder="Username" autofocus="">
+											</div>
+										</div>
+										<div class="field">
+											<div class="control">
+												<input class="input is-large" type="email" name="email" placeholder="Your Email" autofocus="">
+											</div>
+										</div>
+
+
+										<div class="field">
+											<div class="control">
+												<input class="input is-large" type="password" name="password" placeholder="Your Password">
+											</div>
+										</div>
+										<div class="field">
+											<div class="control">
+												<input class="input is-large" type="password" name="password_" placeholder="Password Confirmation">
+											</div>
+										</div>
+										<!--  <div class="field">
+                <label class="checkbox">
+                  <input type="checkbox">
+                  Remember me
+                </label>
+              </div> -->
+										<input type="submit" class="button is-block is-info is-large" style="width:100%" value="Register"></a>
+							</form>
 						</div>
-						<% } %>
-						<label for="user">Name:</label>
-						<input name="name" id="name" class="form-control" placeholder="Name"><br>
-						<label for="user">Username:</label>
-						<input name="uname" id="uname" class="form-control" placeholder="Username"><br>
-						<label for="email">Email:</label>
-						<input name="email" id="email" class="form-control"  placeholder="Email"><br>
-						<label for="password">Password:</label>
-						<input name="password" type="password" id="pass" class="form-control" placeholder="password" ><br>
-						<label for="password_">Confirm Password:</label>
-						<input name="password_" type="password" id="pass_" class="form-control" placeholder="password"><br>
-						<input type="submit"  class="btn btn-success" value="Register:">
-					</form>
+						<p class="has-text-grey">
+							<a href="/login">Log In</a> &nbsp;·&nbsp;
+							<!-- <a href="#">Forgot Password</a> &nbsp;·&nbsp; -->
+							<a href="#">Need Help?</a>
+						</p>
+					</div>
 				</div>
 			</div>
-		</div>
+		</section>
 		<script>
 			// var prev = JSON.parse('<%- data %>');
 			// console.log(prev);
@@ -67,9 +109,9 @@
 			// 		$("[name='"+index+"']").val(value);
 			// 	} 
 			// });
-			<% for(var prop in data){%>
-				<% if(data[prop]!=''){%>
-					$("[name='<%= prop %>']").val('<%= data[prop] %>');
+			<% for (var prop in data) {%>
+				<% if (data[prop] != '') {%>
+			$("[name='<%= prop %>']").val('<%= data[prop] %>');
 				<% } %>
 			<% } %>
 
@@ -104,4 +146,5 @@
 			// });
 		</script>
 	</body>
-</html>
+
+	</html>

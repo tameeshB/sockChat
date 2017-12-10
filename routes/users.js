@@ -25,7 +25,7 @@ module.exports = function(app, passport, db) {
 	});
 
 	app.post('/api/register',isValidSignup, passport.authenticate('local-signup', {
-        successRedirect : '/profile', 
+        successRedirect : '/login', 
         failureRedirect : '/register', 
         failureFlash : true 
     }));
