@@ -1,0 +1,14 @@
+#sockChat{
+	position: fixed;
+	top:10px;
+	left:10px;
+	display: inline;
+}
+#sockChat h1{
+	font-size: 40px;
+    position: fixed;
+    left: 55px;
+    vertical-align: middle;
+    top: 10px;
+
+}

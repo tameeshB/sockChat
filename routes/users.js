@@ -44,7 +44,7 @@ module.exports = function(app, passport, db) {
 	});
 
 	 app.get('/logout',isLoggedIn, function(req, res) {
-        req.logout();
+        req.session.destroy();;
         res.redirect('/');
     });
 
@@ -52,7 +52,7 @@ module.exports = function(app, passport, db) {
 
 	    // if user is authenticated in the session, carry on 
 	    console.log('check auth');
-	    if (req.isAuthenticated()){
+	    if (req.session.hasOwnProperty('user')){
 	    	console.log('isauth');
 	        return next();
 	    }

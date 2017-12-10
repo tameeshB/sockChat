@@ -88,8 +88,17 @@ module.exports = function(passport){
 
                 // all is well, return successful user
                 console.log('login successful');
+                console.log(user);
+                console.log(req.user);
+                console.log('login successful1.5');
+                
+                req.user = user;
+                var ssn = req.session;
+                ssn.user = user;
+                console.log(req.session.user);
+                console.log('login successful2');
                 // req.flash('user',user);
-                return done(null, user);
+               return done(null, user);
 
             });
 

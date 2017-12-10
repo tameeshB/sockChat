@@ -20,14 +20,25 @@ var configDB = require('./config/database.js');
 var morgan       = require('morgan');
 var session      = require('express-session');
 
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash());
+app.use(morgan('dev'));
+app.use(cookieParser());
+
+app.use(bodyP.json());
+app.use(bodyP.urlencoded({ extended: false }));
+
+app.use(express.static(path.join(__dirname, 'public')));
+
 //db connections
 var db = mongojs('sockchat', ['messages']);
 mongoose.connect(configDB.url, {
   useMongoClient: true,
 }); 
+
+app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash());
+
 require('./config/passport')(passport);
 
 var port = process.env.PORT || 3000;
@@ -35,13 +46,8 @@ var port = process.env.PORT || 3000;
 app.set('view engine','ejs');
 app.set('views',path.join(__dirname,'views'));
 
-app.use(bodyP.json());
-app.use(bodyP.urlencoded({extended: false}));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname,'public')));
-app.use(morgan('dev'));
 
-app.use(session({ secret: 'tameeshb' })); // session secret
+// app.use(session({ secret: 'tameeshb' })); // session secret
 
 
 // Express Validator
