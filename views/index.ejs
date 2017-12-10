@@ -1,112 +1,212 @@
-<html>
-	<head>
-		<title>
-			Welcome to sockchat.
-		</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-		 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-		 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
-		<style>
-			body{
-				margin:20px;
-			}
-			#postLogin{
-				display: none;
-			}
-		</style>
-	</head> 
-	<body>
-		<div class="container">
-			<h1>SockChat</h1>
-			<div class="row" id="userFormArea">
-				<div class="col-sm-12">
-					<form id="userForm">
-						<label for="user">Enter desired username:</label>
-						<input name="user" id="uname" class="form-control" id="name" ><br>
-						<input type="submit" class="btn btn-success" value="Login:">
-					</form>
-				</div>
-			</div>
-			<div class="row" id="postLogin">
-				<div id="online" class="col-sm-3 well well-sm">
-					<h3>Online users</h3>
-					<ul class="list-group" id="onlineUsers">
-					  
-					</ul>
-				</div>
-				<div class="col-sm-8  jumbotron">
-					<h2>Chat here!</h2>
-					
-					<ul id="chat">
-						<div class="alert alert-info">
-						  <strong>Server!</strong>Welcome to this chat room! You are now connected to the server!
-						</div>
+<%- include head.ejs %>
+  <title>SockChat | Home</title>
+  <link rel="stylesheet" type="text/css" href="/css/landing.css">
+  <link rel="stylesheet" type="text/css" href="/css/common.css">
+</head>
+<body>
 
-						<% messages.forEach(function(msg){%>
-							<div data-user="<%= msg.user%>" class="alert alert-success message_">
-							  <strong><%= msg.user%></strong><%= msg.message%>
-							</div>
-						<%})%>
-					</ul>
+  <section class="hero is-info is-fullheight is-bold">
+  	
+    <div class="hero-head">
+      <nav class="navbar">
+        <div class="container">
+          <div class="navbar-brand">
+            <div id= "sockChat"  class="title" ><a href="/"><img src="/images/logo/icon48.png"id="header_logo" alt=""><h1><b>ock</b>Chat</h1></a></div>
+            <span class="navbar-burger burger" data-target="navbarMenu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </div>
+          <div id="navbarMenu" class="navbar-menu">
+            <div class="navbar-end">
+              <a class="navbar-item is-active">
+                Home
+              </a>
+              <a href="/register" class="navbar-item">
+                Register
+              </a>
+              <a href="/login" class="navbar-item">
+                Login
+              </a>
+              <span class="navbar-item">
+                <a href="https://github.com/tameeshB/sockChat" class="button is-white is-outlined is-small" target="_blank">
+                  <span class="icon">
+                    <i class="fa fa-github"></i>
+                  </span>
+                  <span>View Source</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <div class="hero-body ">
+      <div class="container has-text-centered">
+        <h1 style="font-size:5em;font-weight: normal !important;" class="title">
+          <b>Sock</b>Chat
+        </h1>
+        <h2 class="subtitle">
+          A <i>VERY</i> reliable way to communicate on the internet. <br>
+          An end-to-end encrypted decentralised cross-platform chat application.
+        </h2>
+        
+      </div>
+    </div>
 
-					<form id="messageForm">
-						<textarea name="message" class="form-control" id="message" cols="50" rows="5"></textarea><br>
-						<input type="submit" class="btn btn-success" value="send message">
-					</form>
-				</div>
-			
-			</div>
-		</div>
-		<script>
-			$(function(){
-				var socket = io.connect();
-				var $msgform = $("#messageForm");
-				var $message = $("#message");
-				var $chat = $("#chat");
-				var myuser ="";
-				$("#userForm").submit(function (e) {
-					e.preventDefault();
-					myuser = $("#uname").val();
-					socket.emit('new user',$("#uname").val(),function(data){
-						if(data){
-							$("#userFormArea").fadeOut();
-							$("#postLogin").fadeIn();
-						}
-					});
-				var preMsg = document.getElementsByClassName('message_');
-				// preMsg.forEach(function(msg_){
-				// 	if($(this).data('user')==myuser){$(this).removeClass('alert-success');$(this).addClass('alert-danger');}
-				// });
-					
-				})
-				socket.on('get users',function(data){
-					var html = '';
-					data.forEach(function(singleuser){
-						html += '<li class="list-group-item">'+singleuser+'</li>';
-					});
-					$("#onlineUsers").html(html);
-				});
-				$msgform.submit(function(e){
-					e.preventDefault();
-					socket.emit('send message',$message.val());
-					$message.val('');
-				});
-				$("#message").on('keyup', function (e) {
-					console.log('dabaya');
-				    if (e.keyCode == 13) {
-				    	console.log('hmm');
-				        $("#messageForm").submit();
-				    }
-				});
-				socket.on('new message',function(data){
-					if(data.user == myuser)
-						$chat.append('<div class="alert alert-danger message_"><strong>'+data.user+':</strong> '+data.msg+'</div>');
-					else
-						$chat.append('<div class="alert alert-success message_"><strong>'+data.user+':</strong> '+data.msg+'</div>');
-				});
-			});
-		</script>
-	</body>
-</html>
+  </section>
+
+  <div class="box cta">
+    <p class="has-text-centered">
+      <span class="tag is-primary">In Dev</span> Contribute to development on <a href="https://github.com/tameeshB/sockChat">GitHub</a>
+    </p>
+  </div>
+
+  <section class="container">
+    <div class="columns features">
+      <div class="column is-4">
+        <div class="card">
+          <div class="card-image has-text-centered">
+              <i class="fa fa-paw"></i>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              <h4>Tristique senectus et netus et. </h4>
+              <p>Purus semper eget duis at tellus at urna condimentum mattis. Non blandit massa enim nec. Integer enim neque volutpat ac tincidunt vitae semper quis. Accumsan tortor posuere ac ut consequat semper viverra nam.</p>
+              <p><a href="#">Learn more</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column is-4">
+        <div class="card">
+          <div class="card-image has-text-centered">
+              <i class="fa fa-id-card-o"></i>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              <h4>Tempor orci dapibus ultrices in.</h4>
+              <p>Ut venenatis tellus in metus vulputate. Amet consectetur adipiscing elit pellentesque. Sed arcu non odio euismod lacinia at quis risus. Faucibus turpis in eu mi bibendum neque egestas cmonsu songue. Phasellus vestibulum lorem sed risus.</p>
+              <p><a href="#">Learn more</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column is-4">
+        <div class="card">
+          <div class="card-image has-text-centered">
+              <i class="fa fa-rocket"></i>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              <h4> Leo integer malesuada nunc vel risus.  </h4>
+              <p>Imperdiet dui accumsan sit amet nulla facilisi morbi. Fusce ut placerat orci nulla pellentesque dignissim enim. Libero id faucibus nisl tincidunt eget nullam. Commodo viverra maecenas accumsan lacus vel facilisis.</p>
+              <p><a href="#">Learn more</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="intro column is-8 is-offset-2">
+      <h2 class="title">Perfect for developers or designers!</h2><br>
+      <p class="subtitle">Vel fringilla est ullamcorper eget nulla facilisi. Nulla facilisi nullam vehicula ipsum a. Neque egestas congue quisque egestas diam in arcu cursus.</p>
+    </div>
+
+    <div class="sandbox">
+      <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child notification is-white">
+            <p class="title">Hello World</p>
+            <p class="subtitle">What is up?</p>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child notification is-white">
+            <p class="title">Foo</p>
+            <p class="subtitle">Bar</p>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child notification is-white">
+            <p class="title">Third column</p>
+            <p class="subtitle">With some content</p>
+            <div class="content">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="tile is-ancestor">
+        <div class="tile is-vertical is-8">
+          <div class="tile">
+            <div class="tile is-parent is-vertical">
+              <article class="tile is-child notification is-white">
+                <p class="title">Vertical tiles</p>
+                <p class="subtitle">Top box</p>
+              </article>
+              <article class="tile is-child notification is-white">
+                <p class="title">Vertical tiles</p>
+                <p class="subtitle">Bottom box</p>
+              </article>
+            </div>
+            <div class="tile is-parent">
+              <article class="tile is-child notification is-white">
+                <p class="title">Middle box</p>
+                <p class="subtitle">With an image</p>
+                <figure class="image is-4by3">
+                  <img src="http://bulma.io/images/placeholders/640x480.png">
+                </figure>
+              </article>
+            </div>
+          </div>
+          <div class="tile is-parent">
+            <article class="tile is-child notification is-white">
+              <p class="title">Wide column</p>
+              <p class="subtitle">Aligned with the right column</p>
+              <div class="content">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child notification is-white">
+            <div class="content">
+              <p class="title">Tall column</p>
+              <p class="subtitle">With even more content</p>
+              <div class="content">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam semper diam at erat pulvinar, at pulvinar felis blandit. Vestibulum volutpat tellus diam, consequat gravida libero rhoncus ut. Morbi maximus, leo sit amet vehicula eleifend, nunc dui porta orci, quis semper odio felis ut quam.</p>
+                <p>Suspendisse varius ligula in molestie lacinia. Maecenas varius eget ligula a sagittis. Pellentesque interdum, nisl nec interdum maximus, augue diam porttitor lorem, et sollicitudin felis neque sit amet erat. Maecenas imperdiet felis nisi, fringilla luctus felis hendrerit sit amet. Aenean vitae gravida diam, finibus dignissim turpis. Sed eget varius ligula, at volutpat tortor.</p>
+                <p>Integer sollicitudin, tortor a mattis commodo, velit urna rhoncus erat, vitae congue lectus dolor consequat libero. Donec leo ligula, maximus et pellentesque sed, gravida a metus. Cras ullamcorper a nunc ac porta. Aliquam ut aliquet lacus, quis faucibus libero. Quisque non semper leo.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child notification is-white">
+            <p class="title">Side column</p>
+            <p class="subtitle">With some content</p>
+            <div class="content">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.</p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent is-8">
+          <article class="tile is-child notification is-white">
+            <p class="title">Main column</p>
+            <p class="subtitle">With some content</p>
+            <div class="content">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+<%- include footer.ejs %>

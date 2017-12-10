@@ -5,7 +5,9 @@
 }
 #sockChat h1{
 	font-size: 40px;
-    position: fixed;
+	position: fixed;
+	text-shadow: #000 0px 1px 20px;
+	z-index: 10;
     left: 55px;
     vertical-align: middle;
     top: 10px;
@@ -40,4 +42,10 @@
 }
 body{
 	overflow-x: hidden;
+}
+
+footer {
+	background-color: #000000 !important;
+	padding: 1rem 1.5rem 2rem !important;
+	color: #FFFFFF;
 }

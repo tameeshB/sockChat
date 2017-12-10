@@ -40,6 +40,7 @@
     "passport-local": "*",
     "passport-twitter": "*",
     "path": "*",
+    "serve-favicon": "^2.4.5",
     "socket.io": "^2.0.4"
   }
 }

@@ -11,6 +11,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var mongojs = require('mongojs');
+// var favicon = require('serve-favicon');
 var ObjectId = mongojs.ObjectId;
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -45,7 +46,7 @@ var port = process.env.PORT || 3000;
 
 app.set('view engine','ejs');
 app.set('views',path.join(__dirname,'views'));
-
+// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 // app.use(session({ secret: 'tameeshb' })); // session secret
 

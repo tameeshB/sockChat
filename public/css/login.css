@@ -1,12 +1,12 @@
 html,body {
   font-family: 'Open Sans', serif;
   font-size: 14px;
-  background-image: url('/images/login_bg_blue.jpg'); 
+  background-image: url('/images/bg/login_blue.jpg'); 
   
   font-weight: 300;
 }
 #main{
-  background-image: url('/images/login_bg_blue.jpg');
+  background-image: url('/images/bg/login_blue.jpg');
 }
 .hero.is-success {
   background: #F2F6FA;
@@ -37,4 +37,22 @@ p {
 }
 p.subtitle {
   padding-top: 1rem;
+}
+
+/* navbar */
+@media only screen and (max-width: 900px) {
+  .hero.is-success .navbar-menu {
+    background-color: #3e3e3e5e !important;
+  }
+}
+@media only screen and (min-width: 900px) {
+  .hero.is-success .navbar-menu {
+    background-color: rgba(0,0,0,0) !important;
+  }
+}
+.hero.is-success .navbar-link.is-active,
+.hero.is-success .navbar-link:hover,
+.hero.is-success a.navbar-item.is-active,
+.hero.is-success a.navbar-item:hover{
+  background-color: #375037 !important;
 }
