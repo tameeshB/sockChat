@@ -20,6 +20,8 @@ var flash    = require('connect-flash');
 var configDB = require('./config/database.js');
 var morgan       = require('morgan');
 var session      = require('express-session');
+var mailer = require('express-mailer');
+
 
 app.use(morgan('dev'));
 app.use(cookieParser());
@@ -35,12 +37,16 @@ mongoose.connect(configDB.url, {
   useMongoClient: true,
 }); 
 
-app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
+app.use(session({ 
+  secret: 'ilovescotchscotchyscotchscotch',
+  resave: true,
+  saveUninitialized: true
+ })); 
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash());
 
-require('./config/passport')(passport);
+require('./config/passport')(passport, app);
 
 var port = process.env.PORT || 3000;
 
@@ -69,7 +75,17 @@ app.use(expressValidator({
   }
 }));
 
-
+mailer.extend(app, {
+  from: 'gmail@gmail.com',
+  host: 'smtp.gmail.com',  
+  secureConnection: true, 
+  port: 465, 
+  transportMethod: 'SMTP',
+  auth: {
+    user: 'gmail@gmail.com',
+    pass: 'gmailpassword'
+  }
+});
 
 //routing
 require('./routes/index.js')(app, passport, db);

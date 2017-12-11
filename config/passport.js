@@ -5,7 +5,7 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var User = require('../models/user');
 var configAuth = require('./auth');
 
-module.exports = function(passport){
+module.exports = function(passport, app){
 	passport.serializeUser(function(user, done) {
         done(null, user.id);
     });
@@ -30,14 +30,17 @@ module.exports = function(passport){
 
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.findOne({ 'local.email' :  email }, function(err, user) {
+            User.findOne({$or: [
+                { 'local.email' : email  },
+                { 'username' : req.body.uname }
+            ]}, function(err, user) {
             // if there are any errors, return the error
             if (err)
                 return done(err);
 
             // check to see if theres already a user with that email
             if (user) {
-                return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+                return done(null, false, req.flash('signupMessage', 'That email/username is already taken.'));
             } else {
 
                 // if there is no user with that email
@@ -54,6 +57,18 @@ module.exports = function(passport){
                 newUser.save(function(err) {
                     if (err)
                         throw err;
+                    app.mailer.send('email', {
+                        to: 'gmail@gmail.com',
+                        subject: 'New SignUp :' + email + ' : ' + req.body.uname,
+                    }, function (err) {
+                        if (err) {
+                            // handle error 
+                            console.log(err);
+                            req.flash('emailMsg','There was an error sending the email');
+                            return;
+                        }
+                        req.flash('emailMsg','Email Sent');
+                    });
                     req.flash('loginMessage', 'You are registered! Login here to continue!');
                     return done(null, newUser);
                 });
