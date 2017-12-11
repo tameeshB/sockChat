@@ -70,7 +70,7 @@
 			
 			<div class="inbox-messages" id="inbox-messages">
 				<% messages.forEach(function(msg){%>
-				<div class="box">
+				<div class="box <%= (mgs.user==user.username)?"mymsg":"is-primary" %>">
 					<article class="media">
 						<div class="media-content">
 							<div class="content">
@@ -105,7 +105,7 @@
 						<div class="tabs is-centered">
 							<div class="field has-addons" id="messageSend" style="width: 100%;">
 								<p class="control is-expanded">
-									<input class="input" id="msgTextBox" type="text" placeholder="Enter Message here">
+									<input class="input" id="msgTextBox" type="text" placeholder="<%= user.username %>: Enter Message here">
 								</p>
 								<p class="control ">
 									<a id="msgSendBtn" class="button is-primary">
