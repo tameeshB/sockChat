@@ -70,7 +70,7 @@
 			
 			<div class="inbox-messages" id="inbox-messages">
 				<% messages.forEach(function(msg){%>
-				<div class="box <%= (mgs.user==user.username)?"mymsg":"is-primary" %>">
+				<div class="box <%= (msg.user==user.username)?"mymsg":"is-primary" %>">
 					<article class="media">
 						<div class="media-content">
 							<div class="content">
