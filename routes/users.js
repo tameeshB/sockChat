@@ -29,9 +29,14 @@ module.exports = function(app, passport, db) {
         failureRedirect : '/register', 
         failureFlash : true 
     }));
+	app.get('/addusername', isLoggedIn,function(req, res){
 
+	})
+	app.post('/addusername', isLoggedIn, function (req, res) {
+
+	})
     app.post('/api/login', passport.authenticate('local-login', {
-           successRedirect : '/profile', 
+           successRedirect : '/app', 
            failureRedirect : '/login',
            failureFlash : true
        }));
@@ -40,7 +45,7 @@ module.exports = function(app, passport, db) {
 	app.get('/profile', isLoggedIn, function(req, res) {
 	    res.render('profile.ejs', {
 	        user : req.user
-	    });
+		});
 	});
 
 	 app.get('/logout',isLoggedIn, function(req, res) {
@@ -54,20 +59,27 @@ module.exports = function(app, passport, db) {
 	}));
 	app.get('/auth/facebook/callback',
 		passport.authenticate('facebook', {
-			successRedirect: '/profile',
+			successRedirect: '/app',
 			failureRedirect: '/register'
 		}));
+
+
 	//Utility functions
-	function isLoggedIn(req, res, next) {
+	isLoggedIn : function isLoggedIn(req, res, next) {
 
 	    // if user is authenticated in the session, carry on 
 	    console.log('check auth');
 	    if (req.session.hasOwnProperty('user')){
 	    	console.log('isauth');
-	        return next();
+			
+			if (!req.session.user.hasOwnProperty('username') && req.url!='/addusername'){
+				res.redirect('/addusername');
+			}
+			
+			return next();
+			
 	    }
 	    console.log('isNOTauth');
-
 	    // if they aren't redirect them to the home page
 	    res.redirect('/');
 	}

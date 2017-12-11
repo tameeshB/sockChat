@@ -1,112 +1,211 @@
-<html>
-	<head>
-		<title>
-			Welcome to sockchat.
-		</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-		 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-		 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
-		<style>
-			body{
-				margin:20px;
-			}
-			#postLogin{
-				display: none;
-			}
-		</style>
-	</head> 
-	<body>
+<%- include head.ejs %>
+	<title>SockChat | <%= user.username %></title>
+	<link rel="stylesheet" type="text/css" href="/css/chat.css">
+	<script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+	<nav class="navbar has-shadow is-black" id="mainNav" style="position:fixed;z-index:100;width:100%">
 		<div class="container">
-			<h1>SockChat</h1>
-			<div class="row" id="userFormArea">
-				<div class="col-sm-12">
-					<form id="userForm">
-						<label for="user">Enter desired username:</label>
-						<input name="user" id="uname" class="form-control" id="name" ><br>
-						<input type="submit" class="btn btn-success" value="Login:">
-					</form>
+			<div class="navbar-brand">
+				<a class="navbar-item" href="/about">
+					<img src="/images/logo/icon96.png" ><b>ock</b>Chat
+				</a>
+	
+				<div class="navbar-burger burger" data-target="navMenu">
+					<span></span>
+					<span></span>
+					<span></span>
 				</div>
 			</div>
-			<div class="row" id="postLogin">
-				<div id="online" class="col-sm-3 well well-sm">
-					<h3>Online users</h3>
-					<ul class="list-group" id="onlineUsers">
-					  
-					</ul>
+	
+			<div id="navMenu" class="navbar-menu">
+				<div class="navbar-end">
+					<div class="navbar-end">
+						<a class="navbar-item">
+							Hi! <%= user.name.split(' ')[0]%>!	
+						</a>
+						<a href="/about" class="navbar-item">
+							About
+						</a>
+						<a href="/register" class="navbar-item">
+							Profile
+						</a>
+						<a href="/logout" class="navbar-item">
+							LogOut
+						</a>
+						
+					</div>
 				</div>
-				<div class="col-sm-8  jumbotron">
-					<h2>Chat here!</h2>
-					
-					<ul id="chat">
-						<div class="alert alert-info">
-						  <strong>Server!</strong>Welcome to this chat room! You are now connected to the server!
-						</div>
-
-						<% messages.forEach(function(msg){%>
-							<div data-user="<%= msg.user%>" class="alert alert-success message_">
-							  <strong><%= msg.user%></strong><%= msg.message%>
-							</div>
-						<%})%>
-					</ul>
-
-					<form id="messageForm">
-						<textarea name="message" class="form-control" id="message" cols="50" rows="5"></textarea><br>
-						<input type="submit" class="btn btn-success" value="send message">
-					</form>
-				</div>
-			
 			</div>
 		</div>
-		<script>
-			$(function(){
-				var socket = io.connect();
-				var $msgform = $("#messageForm");
-				var $message = $("#message");
-				var $chat = $("#chat");
-				var myuser ="";
-				$("#userForm").submit(function (e) {
-					e.preventDefault();
-					myuser = $("#uname").val();
-					socket.emit('new user',$("#uname").val(),function(data){
-						if(data){
-							$("#userFormArea").fadeOut();
-							$("#postLogin").fadeIn();
-						}
-					});
-				var preMsg = document.getElementsByClassName('message_');
-				// preMsg.forEach(function(msg_){
-				// 	if($(this).data('user')==myuser){$(this).removeClass('alert-success');$(this).addClass('alert-danger');}
-				// });
+	</nav>
+	
+	<div id="filler">
+<br><br>
+	</div>
+
+
+	<div class="columns" id="mail-app">
+		<aside class="column is-3 aside hero is-fullheight is-dark" id="conv-list">
+			<div>
+				<div class="compose has-text-centered">
+					<a class="button is-danger is-block is-bold">
+						<span class="compose">New Thread</span>
+					</a>
+				</div>
+				<div class="main">
+					<a href="#" class="item active">
+						<span class="icon">
+							<i class="fa fa-inbox"></i>
+						</span>
+						<span class="name">Common Channel</span>
+					</a>
 					
-				})
-				socket.on('get users',function(data){
-					var html = '';
-					data.forEach(function(singleuser){
-						html += '<li class="list-group-item">'+singleuser+'</li>';
-					});
-					$("#onlineUsers").html(html);
+				</div>
+			</div>
+		</aside>
+		
+		<div class="column is-7 messages hero is-fullheight" id="message-feed" >
+			
+			<div class="inbox-messages" id="inbox-messages">
+				<% messages.forEach(function(msg){%>
+				<div class="box">
+					<article class="media">
+						<div class="media-content">
+							<div class="content">
+								<p>
+									<strong><%= msg.user%></strong>
+									<small>@johnsmith</small>
+									<small></small>
+									<br><%= msg.message%>
+								</p>
+							</div>
+							
+						</div>
+					</article>
+				</div>
+				<%})%>
+			</div>
+			
+			<!-- <div class="field" id="messageSend">
+				<form action="">
+				<label class="label">Label</label>
+				<div class="control">
+					<input class="input" type="text" placeholder="Text input"><button class="button is-primary">Submit</button>
+				</div>
+				<div class="control">
+					
+				</div>
+				</form>
+
+			</div> -->
+				<div class="hero-foot" id="makeVisible" style="bottom: 0;display:none;position: fixed; margin-bottom:10px">
+					<div class="container">
+						<div class="tabs is-centered">
+							<div class="field has-addons" id="messageSend" style="width: 100%;">
+								<p class="control is-expanded">
+									<input class="input" id="msgTextBox" type="text" placeholder="Enter Message here">
+								</p>
+								<p class="control ">
+									<a id="msgSendBtn" class="button is-primary">
+										Send
+									</a>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+		</div>
+	
+		<div class="column is-2 messages hero is-fullheight is-black" id="feed-info">
+		<div class="column ">
+		
+			<div class="panel" id="activeUserpanel">
+				<p class="panel-heading">
+					Active users
+				</p>
+				
+				<span class="panel-block">
+					<span class="panel-icon">
+						<i class="fa fa-user"></i>
+					</span>
+				</span>
+			</div>
+		
+		</div>
+			
+		</div>
+		
+		
+		</div>
+		
+	</div>
+	
+	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.3/vue.min.js" integrity="sha256-5CEXP4Sh+bwJYBngjYYh2TEev9kTDwcjw60jZatTHtY="
+	 crossorigin="anonymous"></script> -->
+	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js" integrity="sha256-QHdJObhDO++VITP6S4tMlDHRWMaUOk+s/xWIRgF/YY0="
+	 crossorigin="anonymous"></script> -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js" integrity="sha256-4PIvl58L9q7iwjT654TQJM+C/acEyoG738iL8B8nhXg="
+	 crossorigin="anonymous"></script>
+	<script type="text/javascript">
+	function removeDup(arr) {
+			let unique_array = Array.from(new Set(arr))
+			return unique_array
+		}
+		$(document).ready(function () {
+
+			$("#messageSend").width($("#message-feed").width());
+			$("#makeVisible").delay(100).fadeIn();
+			// $(".main .item").click(function() {
+			// 	$("#conv-list").fadeOut();
+
+			// });
+			$("#filler").height($("#mainNav").height());
+			$('footer').hide();
+			
+			
+		});
+		$(function () {
+				var socket = io.connect();
+				var $message = $("#msgTextBox");
+				var $chat = $("#inbox-messages");
+				var myuser = "";
+				//onload init
+				myuser = '<%= user.username %>';
+				socket.emit('new user', myuser, function (data) {
+					if (data) {
+						$("#userFormArea").fadeOut();
+						$("#postLogin").fadeIn();
+					}
 				});
-				$msgform.submit(function(e){
+				socket.on('get users', function (data) {
+					var html = '<p class="panel-heading">Active users</p >';
+						
+					removeDup(data).forEach(function (singleuser) {
+						html += '<a class="panel-block"><i class="fa fa-user"></i>&nbsp;'+singleuser+'</a >';
+					});
+					$("#activeUserpanel").html(html);
+				});
+				$("#msgSendBtn").click(function (e) {
 					e.preventDefault();
-					socket.emit('send message',$message.val());
+					socket.emit('send message', $message.val());
 					$message.val('');
 				});
-				$("#message").on('keyup', function (e) {
-					console.log('dabaya');
-				    if (e.keyCode == 13) {
-				    	console.log('hmm');
-				        $("#messageForm").submit();
-				    }
+				$("#msgTextBox").on('keyup', function (e) {
+					console.log('enter trig');
+					if (e.keyCode == 13) {
+						console.log('hmm');
+						$("#msgSendBtn").trigger("click");
+					}
 				});
-				socket.on('new message',function(data){
-					if(data.user == myuser)
-						$chat.append('<div class="alert alert-danger message_"><strong>'+data.user+':</strong> '+data.msg+'</div>');
-					else
-						$chat.append('<div class="alert alert-success message_"><strong>'+data.user+':</strong> '+data.msg+'</div>');
+				socket.on('new message', function (data) {
+					var col = 'is-primary';
+					if (data.user == myuser)
+						col = 'mymsg';
+					$chat.append('<div class="box '+ col +'"><article class="media"><div class="media-content"><div class="content"><p><strong> '+data.user+'</strong><small>@' + data.user +'</small><small></small><br>'+data.msg+'</p></div></div></article></div>');
 				});
 			});
-		</script>
-	</body>
-</html>
+
+	</script>
+<%- include footer.ejs %>

@@ -124,3 +124,29 @@ footer {
 .loginBtn--google:focus {
 	background: #E74B37;
 }
+
+/* //ripple */
+/*.ink styles - the elements which will create the ripple effect. The size and position of these elements will be set by the JS code. Initially these elements will be scaled down to 0% and later animated to large fading circles on user click.*/
+
+.ink {
+	display: block;
+	position: absolute;
+	background: hsl(180, 3%, 7%);
+	border-radius: 100%;
+	transform: scale(0);
+}
+
+
+/*animation effect*/
+
+.ink.animate {
+	animation: ripple 0.65s linear;
+}
+
+@keyframes ripple {
+	/*scale the element to 250% to safely cover the entire link and fade it out*/
+	100% {
+		opacity: 0;
+		transform: scale(2.5);
+	}
+}

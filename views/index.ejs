@@ -23,12 +23,22 @@
               <a class="navbar-item is-active">
                 Home
               </a>
-              <a href="/register" class="navbar-item">
-                Register
-              </a>
-              <a href="/login" class="navbar-item">
-                Login
-              </a>
+              <% if(user && user.hasOwnProperty('username')){ %>
+                <a href="/app" class="navbar-item">
+                  Chat
+                </a>
+                <a href="/profile" class="navbar-item">
+                  Profile
+                </a>
+              <%}else{%>
+                <a href="/register" class="navbar-item">
+                  Register
+                </a>
+                <a href="/login" class="navbar-item">
+                  Login
+                </a>
+              <%}%>
+              
               <span class="navbar-item">
                 <a href="https://github.com/tameeshB/sockChat" class="button is-white is-outlined is-small" target="_blank">
                   <span class="icon">
@@ -54,10 +64,10 @@
         
       </div>
     </div>
-  <img src="/images/scroll.gif" style="position:absolute;bottom: -100px;transform: translateX(-50%) scale(0.5);left: 50%;">
+  <img src="/images/scroll.gif" style="position:absolute;bottom: -100px;transform: translateX(-50%) scale(0.5);left: 50%;cursor:pointer" id="scrollToMainContent">
   </section>
 
-  <div class="box cta">
+  <div class="box cta" id="MainContentStartsHere">
     <p class="has-text-centered">
       <span class="tag is-primary">In Dev</span> Contribute to development on <a href="https://github.com/tameeshB/sockChat">GitHub</a>
     </p>
