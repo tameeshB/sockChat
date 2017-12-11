@@ -1,0 +1,65 @@
+<%- include head.ejs %>
+    <title>SockChat | 404</title>
+    <link rel="stylesheet" type="text/css" href="/css/landing.css">
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    </head>
+
+    <body>
+
+        <section class="hero is-info is-fullheight is-bold" style="background-image:url('/images/bg/login_blue.jpg') !important;background-size: unset !important;">
+
+            <div class="hero-head">
+                <nav class="navbar">
+                    <div class="container">
+                        <div class="navbar-brand">
+                            <div id="sockChat" class="title">
+                                <a href="/">
+                                    <img src="/images/logo/icon48.png" id="header_logo" alt="">
+                                    <h1>
+                                        <b>ock</b>Chat</h1>
+                                </a>
+                            </div>
+                            <span class="navbar-burger burger" data-target="navbarMenu">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </span>
+                        </div>
+                        <div id="navbarMenu" class="navbar-menu">
+                            <div class="navbar-end">
+                                <a class="navbar-item">
+                                    Home
+                                </a>
+                                <a href="/register" class="navbar-item">
+                                    Register
+                                </a>
+                                <a href="/login" class="navbar-item">
+                                    Login
+                                </a>
+                                <span class="navbar-item">
+                                    <a href="https://github.com/tameeshB/sockChat" class="button is-white is-outlined is-small" target="_blank">
+                                        <span class="icon">
+                                            <i class="fa fa-github"></i>
+                                        </span>
+                                        <span>View Source</span>
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div class="hero-body ">
+                <div class="container has-text-centered">
+                    <h1 style="font-size:5em;font-weight: normal !important;" class="title">
+                        404! Page not found
+                    </h1>
+                    <img src="/images/404/<%= ((num = Math.floor(Math.random() * 8) + 1)==7)?num+'.png':num+'.jpg' %>" alt="">
+
+                </div>
+            </div>
+
+        </section>
+
+       
+        <%- include footer.ejs %>

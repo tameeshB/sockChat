@@ -1,7 +1,9 @@
 //dependencies
 var LocalStrategy = require('passport-local').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
 
 var User = require('../models/user');
+var configAuth = require('./auth');
 
 module.exports = function(passport){
 	passport.serializeUser(function(user, done) {
@@ -13,7 +15,7 @@ module.exports = function(passport){
             done(err, user);
         });
     });
-
+//local
     passport.use('local-signup', new LocalStrategy({
         // by default, local strategy uses username and password, we will override with email
         usernameField : 'email',
@@ -85,9 +87,7 @@ module.exports = function(passport){
 
                 // if the user is found but the password is wrong
                 if (!user.validPassword(password))
-                    return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
-
-                // all is well, return successful user
+                    return done(null, false, req.flash('loginMessage', 'Wrong password.')); 
                 console.log('login successful');
                 console.log(user);
                 console.log(req.user);
@@ -98,10 +98,53 @@ module.exports = function(passport){
                 ssn.user = user;
                 console.log(req.session.user);
                 console.log('login successful2');
-                // req.flash('user',user);
                return done(null, user);
 
             });
 
         }));
+
+
+
+
+    // facebook
+    passport.use(new FacebookStrategy({
+        clientID: configAuth.facebookAuth.clientID,
+        clientSecret: configAuth.facebookAuth.clientSecret,
+        callbackURL: configAuth.facebookAuth.callbackURL
+
+    },
+        function (token, refreshToken, profile, done) {
+            process.nextTick(function () {
+
+                // find the user in the database based on their facebook id
+                User.findOne({ 'facebook.id': profile.id }, function (err, user) {
+                    if (err)
+                        return done(err);
+                    if (user) {
+                        //login
+                        var ssn = req.session;
+                        ssn.user = user;
+                        return done(null, user); 
+                    } else {
+                        var newUser = new User();
+                        newUser.facebook.id = profile.id;
+                        newUser.facebook.token = token;
+                        newUser.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
+                        newUser.name = profile.name.givenName + ' ' + profile.name.familyName;
+                        newUser.facebook.email = profile.emails[0].value;
+                        newUser.save(function (err) {
+                            if (err)
+                                throw err;
+                            var ssn = req.session;
+                            ssn.user = newUser;
+                            return done(null, newUser);
+                        });
+                    }
+
+                });
+            });
+
+        }));
+
 };

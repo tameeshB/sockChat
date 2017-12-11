@@ -48,6 +48,16 @@ module.exports = function(app, passport, db) {
         res.redirect('/');
     });
 
+	//fb
+	app.get('/auth/facebook', passport.authenticate('facebook', {
+		scope: ['public_profile', 'email']
+	}));
+	app.get('/auth/facebook/callback',
+		passport.authenticate('facebook', {
+			successRedirect: '/profile',
+			failureRedirect: '/register'
+		}));
+	//Utility functions
 	function isLoggedIn(req, res, next) {
 
 	    // if user is authenticated in the session, carry on 
