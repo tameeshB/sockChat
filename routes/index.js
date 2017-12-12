@@ -4,7 +4,7 @@ module.exports = function(app, passport, db) {
 	app.get('/:type(|about)',function(req,res){
 		// res.sendFile(__dirname+'/index.html');
 		console.log(req);
-		if (req.session.hasOwnProperty('user') && req.url!='/about'){
+		if (req.isAuthenticated() && req.url!='/about'){
 			
 			res.redirect('/app');
 		}else{
@@ -27,7 +27,7 @@ module.exports = function(app, passport, db) {
 
 		// if user is authenticated in the session, carry on 
 		console.log('check auth');
-		if (req.session.hasOwnProperty('user')) {
+		if (req.isAuthenticated()) {
 			console.log('isauth');
 
 			if (!req.session.user.hasOwnProperty('username') && req.url != '/addusername') {

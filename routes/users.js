@@ -43,6 +43,7 @@ module.exports = function(app, passport, db) {
 
 
 	app.get('/profile', isLoggedIn, function(req, res) {
+		console.log()
 	    res.render('profile.ejs', {
 	        user : req.user
 		});
@@ -69,7 +70,7 @@ module.exports = function(app, passport, db) {
 
 	    // if user is authenticated in the session, carry on 
 	    console.log('check auth');
-	    if (req.session.hasOwnProperty('user')){
+		if (req.isAuthenticated()){
 	    	console.log('isauth');
 			
 			if (!req.session.user.hasOwnProperty('username') && req.url!='/addusername'){
