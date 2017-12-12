@@ -18,10 +18,10 @@ var passport = require('passport');
 var expressValidator = require('express-validator');
 var flash    = require('connect-flash');
 var configDB = require('./config/database.js');
-var morgan       = require('morgan');
-var session      = require('express-session');
+var morgan = require('morgan');
+var session = require('express-session');
 var mailer = require('express-mailer');
-
+var authConfig = require('./config/auth');
 
 app.use(morgan('dev'));
 app.use(cookieParser());
@@ -76,14 +76,14 @@ app.use(expressValidator({
 }));
 
 mailer.extend(app, {
-  from: 'gmail@gmail.com',
+  from: authConfig.emailCreds.email,
   host: 'smtp.gmail.com',  
   secureConnection: true, 
   port: 465, 
   transportMethod: 'SMTP',
   auth: {
-    user: 'gmail@gmail.com',
-    pass: 'gmailpassword'
+    user: authConfig.emailCreds.email,
+    pass: authConfig.emailCreds.pass
   }
 });
 
@@ -123,4 +123,4 @@ server.listen(process.env.PORT || 3000);
 console.log('The magic happens on port ' + port);
 
 //socket programming using socket.io
-require('./sockets.js')(app, io, db);
+require('./server_sockets.js')(app, io, db);

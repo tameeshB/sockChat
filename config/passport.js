@@ -5,115 +5,103 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var User = require('../models/user');
 var configAuth = require('./auth');
 
-module.exports = function(passport, app){
-	passport.serializeUser(function(user, done) {
+module.exports = function (passport, app) {
+    passport.serializeUser(function (user, done) {
         done(null, user.id);
     });
 
-    passport.deserializeUser(function(id, done) {
-        User.findById(id, function(err, user) {
+    passport.deserializeUser(function (id, done) {
+        User.findById(id, function (err, user) {
             done(err, user);
         });
     });
-//local
+    //local
     passport.use('local-signup', new LocalStrategy({
-        // by default, local strategy uses username and password, we will override with email
-        usernameField : 'email',
-        passwordField : 'password',
-        passReqToCallback : true // allows us to pass back the entire request to the callback
+        usernameField: 'email',
+        passwordField: 'password',
+        passReqToCallback: true
     },
-    function(req, email, password, done) {
-
-        // asynchronous
-        // User.findOne wont fire unless data is sent back
-        process.nextTick(function() {
-
-        // find a user whose email is the same as the forms email
-        // we are checking to see if the user trying to login already exists
-            User.findOne({$or: [
-                { 'local.email' : email  },
-                { 'username' : req.body.uname }
-            ]}, function(err, user) {
-            // if there are any errors, return the error
-            if (err)
-                return done(err);
-
-            // check to see if theres already a user with that email
-            if (user) {
-                return done(null, false, req.flash('signupMessage', 'That email/username is already taken.'));
-            } else {
-
-                // if there is no user with that email
-                // create the user
-                var newUser = new User();
-
-                // set the user's local credentials
-                newUser.local.email    = email;
-                newUser.local.password = newUser.generateHash(password);
-                newUser.username = req.body.uname;
-                newUser.name = req.body.name;
-
-                // save the user
-                newUser.save(function(err) {
+        function (req, email, password, done) {
+            process.nextTick(function () {
+                User.findOne({
+                    $or: [
+                    { 'local.email': email },
+                    { 'username': req.body.uname }
+                    ]
+                }, function (err, user) {
                     if (err)
-                        throw err;
-                    app.mailer.send('email', {
-                        to: 'gmail@gmail.com',
-                        subject: 'New SignUp :' + email + ' : ' + req.body.uname,
-                    }, function (err) {
-                        if (err) {
-                            // handle error 
-                            console.log(err);
-                            req.flash('emailMsg','There was an error sending the email');
-                            return;
-                        }
-                        req.flash('emailMsg','Email Sent');
-                    });
-                    req.flash('loginMessage', 'You are registered! Login here to continue!');
-                    return done(null, newUser);
+                        return done(err);
+                        //check dupes
+                    if (user) {
+                        return done(null, false, req.flash('signupMessage', 'That email/username is already taken.'));
+                    } else {
+                        var newUser = new User();
+
+                        newUser.local.email = email;
+                        newUser.local.password = newUser.generateHash(password);
+                        newUser.hash = newUser.generateAccessHash(req.body.uname, password);
+                        newUser.username = req.body.uname;
+                        newUser.name = req.body.name;
+
+                        // save the user
+                        newUser.save(function (err) {
+                            if (err)
+                                throw err;
+                            app.mailer.send('email', {
+                                to: 'gmail@gmail.com',
+                                subject: 'New SignUp :' + email + ' : ' + req.body.uname,
+                            }, function (err) {
+                                if (err) {
+                                    // handle error 
+                                    console.log(err);
+                                    req.flash('emailMsg', 'There was an error sending the email');
+                                    return;
+                                }
+                                req.flash('emailMsg', 'Email Sent');
+                            });
+                            req.flash('loginMessage', 'You are registered! Login here to continue!');
+                            
+                            return done(null, newUser);
+                        });
+                    }
+
                 });
-            }
 
-        });    
+            });
 
-        });
-
-    }));
+        }));
 
 
     //local login
     passport.use('local-login', new LocalStrategy({
-            usernameField : 'email',
-            passwordField : 'password',
-            passReqToCallback : true 
-        },
-        function(req, email, password, done) { // callback with email and password from our form
-
-            // find a user whose email is the same as the forms email
-            // we are checking to see if the user trying to login already exists
-            User.findOne({ 'local.email' :  email }, function(err, user) {
-                // if there are any errors, return the error before anything else
+        usernameField: 'email',
+        passwordField: 'password',
+        passReqToCallback: true
+    },
+        function (req, email, password, done) {
+            User.findOne({
+                'local.email': email
+            }, function (err, user) {
                 if (err)
                     return done(err);
-
-                // if no user is found, return the message
                 if (!user)
-                    return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
-
-                // if the user is found but the password is wrong
+                    return done(null, false, req.flash('loginMessage', 'No user found.'));
                 if (!user.validPassword(password))
-                    return done(null, false, req.flash('loginMessage', 'Wrong password.')); 
-                console.log('login successful');
-                console.log(user);
-                console.log(req.user);
-                console.log('login successful1.5');
-                
-                req.user = user;
+                    return done(null, false, req.flash('loginMessage', 'Wrong password.'));
                 var ssn = req.session;
+                if (user.rooms){
+                    ssn.rooms = user.rooms;
+                    roomsGL_id = user.rooms;
+                    userGL = user;
+                }
+                else{
+                    ssn.rooms = [];
+                    roomsGL_id = {};
+                    userGL = user;
+                }
+                req.user = user;
                 ssn.user = user;
-                console.log(req.session.user);
-                console.log('login successful2');
-               return done(null, user);
+                return done(null, user);
 
             });
 
@@ -133,14 +121,16 @@ module.exports = function(passport, app){
             process.nextTick(function () {
 
                 // find the user in the database based on their facebook id
-                User.findOne({ 'facebook.id': profile.id }, function (err, user) {
+                User.findOne({
+                    'facebook.id': profile.id
+                }, function (err, user) {
                     if (err)
                         return done(err);
                     if (user) {
                         //login
                         var ssn = req.session;
                         ssn.user = user;
-                        return done(null, user); 
+                        return done(null, user);
                     } else {
                         var newUser = new User();
                         newUser.facebook.id = profile.id;

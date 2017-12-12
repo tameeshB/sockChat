@@ -1,97 +1,109 @@
 <%- include head.ejs %>
-	<title>SockChat | <%= user.username %></title>
+	<title>SockChat |
+		<%= user.username %>
+	</title>
 	<link rel="stylesheet" type="text/css" href="/css/chat.css">
 	<script src="/socket.io/socket.io.js"></script>
-</head>
+	</head>
 
-<body>
-	<nav class="navbar has-shadow is-black" id="mainNav" style="position:fixed;z-index:100;width:100%">
-		<div class="container">
-			<div class="navbar-brand">
-				<img src="/images/back.png" height="10px" style="max-height: 30px;top: 10px;margin-top: 8px;margin-left: 10px;display:none;" id="backBthMob">
-				<a class="navbar-item" href="/about" id="branding_sockchat">
-					<img src="/images/logo/icon96.png" ><b>ock</b>Chat
-				</a>
-				<img src="/images/info.png" height="10px" style="max-height: 20px; top: 12px; position: absolute; right: 50px;display:none" id="infoBthMob">
-				<div class="navbar-burger burger" data-target="navMenu">
-					<span></span>
-					<span></span>
-					<span></span>
+	<body>
+		<nav class="navbar has-shadow is-black" id="mainNav" style="position:fixed;z-index:100;width:100%">
+			<div class="container">
+				<div class="navbar-brand">
+					<img src="/images/back.png" height="10px" style="max-height: 30px;top: 10px;margin-top: 8px;margin-left: 10px;display:none;"
+					 id="backBthMob">
+					<a class="navbar-item" href="/about" id="branding_sockchat">
+						<img src="/images/logo/icon96.png">
+						<b>ock</b>Chat
+					</a>
+					<img src="/images/info.png" height="10px" style="max-height: 20px; top: 12px; position: absolute; right: 50px;display:none"
+					 id="infoBthMob">
+					<div class="navbar-burger burger" data-target="navMenu">
+						<span></span>
+						<span></span>
+						<span></span>
+					</div>
+
+
 				</div>
 
-				
-			</div>
-			
-			<div id="navbarMenu" class="navbar-menu">
-				<div class="navbar-end">
+				<div id="navbarMenu" class="navbar-menu">
 					<div class="navbar-end">
-						<a class="navbar-item">
-							Hi! <%= user.name.split(' ')[0]%>!	
-						</a>
-						<a href="/about" class="navbar-item">
-							About
-						</a>
-						<a href="/profile" class="navbar-item">
-							Profile
-						</a>
-						<a href="/logout" class="navbar-item">
-							LogOut
-						</a>
-						
+						<div class="navbar-end">
+							<a class="navbar-item">
+								Hi!
+								<%= user.name.split(' ')[0]%>!
+							</a>
+							<a href="/about" class="navbar-item">
+								About
+							</a>
+							<a href="/profile" class="navbar-item">
+								Profile
+							</a>
+							<a href="/logout" class="navbar-item">
+								LogOut
+							</a>
+
+						</div>
 					</div>
 				</div>
 			</div>
+		</nav>
+
+		<div id="filler">
+			<br>
+			<br>
 		</div>
-	</nav>
-	
-	<div id="filler">
-<br><br>
-	</div>
 
 
-	<div class="columns" id="mail-app">
-		<aside class="column is-3 aside hero is-fullheight is-dark" id="conv-list">
-			<div>
-				<div class="compose has-text-centered">
-					<a class="button is-danger is-block is-bold">
-						<span class="compose">New Thread</span>
-					</a>
+		<div class="columns" id="mail-app">
+			<aside class="column is-3 aside hero is-fullheight is-dark" id="conv-list">
+				<div>
+					<div class="compose has-text-centered">
+						<a class="button is-danger is-block is-bold">
+							<span class="compose">New Thread</span>
+						</a>
+					</div>
+					<div class="main">
+						<a href="#" class="item active">
+							<span class="icon">
+								<i class="fa fa-inbox"></i>
+							</span>
+							<span class="name">Common Channel</span>
+						</a>
+
+					</div>
 				</div>
-				<div class="main">
-					<a href="#" class="item active">
-						<span class="icon">
-							<i class="fa fa-inbox"></i>
-						</span>
-						<span class="name">Common Channel</span>
-					</a>
-					
-				</div>
-			</div>
-		</aside>
-		
-		<div class="column is-7 messages hero is-fullheight" id="message-feed" >
-			
-			<div class="inbox-messages" id="inbox-messages">
-				<% messages.forEach(function(msg){%>
-				<div class="box <%= (msg.user==user.username)?"mymsg":"is-primary" %>">
-					<article class="media">
-						<div class="media-content">
-							<div class="content">
-								<p>
-									<strong><%= msg.user%></strong>
-									<small>@<%= msg.user%></small>
-									<small></small>
-									<br><%= msg.message%>
-								</p>
-							</div>
-							
+			</aside>
+
+			<div class="column is-7 messages hero is-fullheight" id="message-feed">
+
+				<div class="inbox-messages" id="inbox-messages">
+					<% messages.forEach(function(msg){%>
+						<div class="box <%= (msg.user==user.username)?" mymsg ":"is-primary " %>">
+							<article class="media">
+								<div class="media-content">
+									<div class="content">
+										<p>
+											<strong>
+												<%= msg.user%>
+											</strong>
+											<small>@
+												<%= msg.user%>
+											</small>
+											<small></small>
+											<br>
+											<%= msg.message%>
+										</p>
+									</div>
+
+								</div>
+							</article>
 						</div>
-					</article>
+						<%})%>
 				</div>
-				<%})%>
-			</div>
-			
-			<!-- <div class="field" id="messageSend">
+
+				<!-- <div class="field" id="messageSend">
 				<form action="">
 				<label class="label">Label</label>
 				<div class="control">
@@ -119,38 +131,38 @@
 						</div>
 					</div>
 				</div>
-		</div>
-	
-		<div class="column is-2 messages hero is-fullheight is-black" id="feed-info">
-		<div class="column ">
-		
-			<div class="panel" id="activeUserpanel">
-				<p class="panel-heading">
-					Active users
-				</p>
-				
-				<span class="panel-block">
-					<span class="panel-icon">
-						<i class="fa fa-user"></i>
-					</span>
-				</span>
 			</div>
-		
+
+			<div class="column is-2 messages hero is-fullheight is-black" id="feed-info">
+				<div class="column ">
+
+					<div class="panel" id="activeUserpanel">
+						<p class="panel-heading">
+							Active users
+						</p>
+
+						<span class="panel-block">
+							<span class="panel-icon">
+								<i class="fa fa-user"></i>
+							</span>
+						</span>
+					</div>
+
+				</div>
+
+			</div>
+
+
 		</div>
-			
+
 		</div>
-		
-		
-		</div>
-		
-	</div>
-	
-	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.3/vue.min.js" integrity="sha256-5CEXP4Sh+bwJYBngjYYh2TEev9kTDwcjw60jZatTHtY="
+
+		<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.3/vue.min.js" integrity="sha256-5CEXP4Sh+bwJYBngjYYh2TEev9kTDwcjw60jZatTHtY="
 	 crossorigin="anonymous"></script> -->
-	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js" integrity="sha256-QHdJObhDO++VITP6S4tMlDHRWMaUOk+s/xWIRgF/YY0="
+		<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js" integrity="sha256-QHdJObhDO++VITP6S4tMlDHRWMaUOk+s/xWIRgF/YY0="
 	 crossorigin="anonymous"></script> -->
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js" integrity="sha256-4PIvl58L9q7iwjT654TQJM+C/acEyoG738iL8B8nhXg="
-	 crossorigin="anonymous"></script>
-	<script src="/js/socket.js" type="text/javascript"></script>
-	<script src="/js/mobile.js"></script>
-<%- include footer.ejs %>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js" integrity="sha256-4PIvl58L9q7iwjT654TQJM+C/acEyoG738iL8B8nhXg="
+		 crossorigin="anonymous"></script>
+		<script src="/js/socket.js" type="text/javascript"></script>
+		<script src="/js/mobile.js"></script>
+		<%- include footer.ejs %>

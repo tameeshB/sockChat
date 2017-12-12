@@ -18,6 +18,11 @@ module.exports = {
 		'clientID'      : '',
 		'clientSecret'  : '',
         'callbackURL'   : 'http://localhost:8080/auth/google/callback'
+    },
+
+    'emailCreds' : {
+        'email' : '',
+        'pass' : ''
     }
 
 };
