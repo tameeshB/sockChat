@@ -34,6 +34,13 @@
 		vertical-align: middle;
 		top: 10px;
 	}
+
+	#branding_sockchat{
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
 }
 @media only screen and (min-width: 900px) {
 	#sockChat {
@@ -126,7 +133,7 @@ footer {
 }
 
 /* //ripple */
-/*.ink styles - the elements which will create the ripple effect. The size and position of these elements will be set by the JS code. Initially these elements will be scaled down to 0% and later animated to large fading circles on user click.*/
+
 
 .ink {
 	display: block;

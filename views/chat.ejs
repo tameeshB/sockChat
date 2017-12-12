@@ -8,18 +8,21 @@
 	<nav class="navbar has-shadow is-black" id="mainNav" style="position:fixed;z-index:100;width:100%">
 		<div class="container">
 			<div class="navbar-brand">
-				<a class="navbar-item" href="/about">
+				<img src="/images/back.png" height="10px" style="max-height: 30px;top: 10px;margin-top: 8px;margin-left: 10px;display:none;" id="backBthMob">
+				<a class="navbar-item" href="/about" id="branding_sockchat">
 					<img src="/images/logo/icon96.png" ><b>ock</b>Chat
 				</a>
-	
+				<img src="/images/info.png" height="10px" style="max-height: 20px; top: 12px; position: absolute; right: 50px;display:none" id="infoBthMob">
 				<div class="navbar-burger burger" data-target="navMenu">
 					<span></span>
 					<span></span>
 					<span></span>
 				</div>
+
+				
 			</div>
-	
-			<div id="navMenu" class="navbar-menu">
+			
+			<div id="navbarMenu" class="navbar-menu">
 				<div class="navbar-end">
 					<div class="navbar-end">
 						<a class="navbar-item">
@@ -156,7 +159,8 @@
 		$(document).ready(function () {
 
 			$("#messageSend").width($("#message-feed").width());
-			$("#makeVisible").delay(100).fadeIn();
+			if($(window).width() >= 900)
+				$("#makeVisible").delay(100).fadeIn();
 			// $(".main .item").click(function() {
 			// 	$("#conv-list").fadeOut();
 
@@ -210,4 +214,5 @@
 			});
 
 	</script>
+	<script src="/js/mobile.js"></script>
 <%- include footer.ejs %>

@@ -14,7 +14,7 @@
 
 $(document).on('click', '#scrollToMainContent', function (event) {
     event.preventDefault();
-
+    
     $('html, body').animate({
         scrollTop: $("#MainContentStartsHere").offset().top
     }, 500);
