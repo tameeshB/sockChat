@@ -33,7 +33,10 @@ module.exports = function (passport, app) {
                         return done(err);
                         //check dupes
                     if (user) {
-                        return done(null, false, req.flash('signupMessage', 'That email/username is already taken.'));
+                        if (user.username == req.body.uname)
+                            return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
+                        else
+                            return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
                     } else {
                         var newUser = new User();
 
