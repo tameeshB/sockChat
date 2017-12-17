@@ -23,20 +23,37 @@ module.exports = function(app, passport, db) {
 	// 			res.send('b' + doc);
 	// 	});
 	// });
-
+	//@async
 	app.get('/app', isLoggedIn,function (req, res) {
-		var rooms = [];
+		var rooms = {}; 
+		var messages = {}; 
+		var rooms_ = []; 
+		roomsGL.forEach(function(room__){
+			rooms_.push(room__.roomname);
+		});
+		console.log('rooms_',rooms_);
 		db.rooms.find({
-			roomid: { $elemMatch: req.session.rooms }
+			roomid: { $in: rooms_ }//@todo: Limit
 		},function(err,docs){
 			if(err)
 				console.log(err);
-			else
 				rooms = docs;
+			console.log('DBGROOMS');
+			//filter message history
+			//message remodel
+			db.messages.find({
+				room: { $in: rooms_ }
+			}, function (err, docs_) {
+				console.log("pastmsgs:",docs_);
+				messages = docs_;//later fetch with js lib
+				console.log("dbg:", messages, rooms)
+				res.render('chat', { messages: messages, user: req.user, rooms: rooms });//want room data here with all participants etc.
+		//complete room data, user and messages
+			});
 		})
-		db.messages.find(function (err, docs) {
-			res.render('chat', { messages: docs, user: req.user, rooms: rooms });
-		});
+		
+		
+		
 	});
 
 

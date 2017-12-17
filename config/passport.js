@@ -1,7 +1,7 @@
 //dependencies
 var LocalStrategy = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
-
+require('../globals'); 
 var User = require('../models/user');
 var configAuth = require('./auth');
 
@@ -25,8 +25,8 @@ module.exports = function (passport, app) {
             process.nextTick(function () {
                 User.findOne({
                     $or: [
-                    { 'local.email': email },
-                    { 'username': req.body.uname }
+                        { 'local.email': email },
+                        { 'username': req.body.uname }
                     ]
                 }, function (err, user) {
                     if (err)
@@ -42,6 +42,7 @@ module.exports = function (passport, app) {
                         newUser.hash = newUser.generateAccessHash(req.body.uname, password);
                         newUser.username = req.body.uname;
                         newUser.name = req.body.name;
+                        // newUser.rooms.push({id:null,roomname:null});
 
                         // save the user
                         newUser.save(function (err) {
@@ -59,6 +60,7 @@ module.exports = function (passport, app) {
                                 }
                                 req.flash('emailMsg', 'Email Sent');
                             });
+
                             req.flash('loginMessage', 'You are registered! Login here to continue!');
                             
                             return done(null, newUser);
@@ -85,20 +87,18 @@ module.exports = function (passport, app) {
                 if (err)
                     return done(err);
                 if (!user)
-                    return done(null, false, req.flash('loginMessage', 'No user found.'));
+                    return done(null, false, req.flash('loginMessage', 'Invalid credentials.'));
                 if (!user.validPassword(password))
-                    return done(null, false, req.flash('loginMessage', 'Wrong password.'));
+                    return done(null, false, req.flash('loginMessage', 'Invalid credentials.'));
                 var ssn = req.session;
                 if (user.rooms){
                     ssn.rooms = user.rooms;
-                    roomsGL_id = user.rooms;
-                    userGL = user;
-                }
-                else{
+                    roomsGL = user.rooms;
+                } else {
                     ssn.rooms = [];
-                    roomsGL_id = {};
-                    userGL = user;
+                    roomsGL = [];
                 }
+                userGL = user;
                 req.user = user;
                 ssn.user = user;
                 return done(null, user);

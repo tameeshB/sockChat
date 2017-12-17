@@ -5,7 +5,12 @@
 	<link rel="stylesheet" type="text/css" href="/css/chat.css">
 	<script src="/socket.io/socket.io.js"></script>
 	</head>
-
+	<script>
+		var myuser = '<%= user.username %>';
+		var userhash = '<%= user.hash %>';
+		var rooms = JSON.parse('<%- JSON.stringify(rooms) %>');
+		var messages = JSON.parse('<%- JSON.stringify(messages) %>');
+	</script>
 	<body>
 		<nav class="navbar has-shadow is-black" id="mainNav" style="position:fixed;z-index:100;width:100%">
 			<div class="container">
@@ -79,28 +84,7 @@
 			<div class="column is-7 messages hero is-fullheight" id="message-feed">
 
 				<div class="inbox-messages" id="inbox-messages">
-					<% messages.forEach(function(msg){%>
-						<div class="box <%= (msg.user==user.username)?" mymsg ":"is-primary " %>">
-							<article class="media">
-								<div class="media-content">
-									<div class="content">
-										<p>
-											<strong>
-												<%= msg.user%>
-											</strong>
-											<small>@
-												<%= msg.user%>
-											</small>
-											<small></small>
-											<br>
-											<%= msg.message%>
-										</p>
-									</div>
-
-								</div>
-							</article>
-						</div>
-						<%})%>
+				
 				</div>
 
 				<!-- <div class="field" id="messageSend">

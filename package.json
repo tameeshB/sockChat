@@ -17,9 +17,11 @@
   },
   "homepage": "https://github.com/tameeshB/sockChat#readme",
   "dependencies": {
+    "async": "^2.6.0",
     "bcrypt-nodejs": "0.0.3",
     "bcryptjs": "*",
     "body-parser": "*",
+    "confirm-cli": "^0.4.0",
     "connect-flash": "*",
     "cookie-parser": "*",
     "ejs": "^2.5.7",
@@ -41,7 +43,9 @@
     "passport-local": "*",
     "passport-twitter": "*",
     "path": "*",
+    "querystring": "^0.2.0",
     "serve-favicon": "^2.4.5",
-    "socket.io": "^2.0.4"
+    "socket.io": "^2.0.4",
+    "wait.for": "^0.6.6"
   }
 }
