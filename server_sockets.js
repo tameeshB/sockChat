@@ -1,9 +1,12 @@
+
 require('./globals'); 
+var async = require('async');
 var wait = require('wait.for');
 var bcrypt = require('bcrypt-nodejs');
 module.exports = function(app, io, db) {
 	var connections= [];
 	var online = [];//points to online users?
+	var onlineUsers = [];
 	//sockets
 	var socketonline = [];
 	io.sockets.on('connection',function(socket){
@@ -16,6 +19,7 @@ module.exports = function(app, io, db) {
 			else
 				socketonline[r.roomname] = [socket.id];
 		});
+		onlineUsers.push(userGL.username);
 		// console.log("conn:socketonline",socketonline);
 		//disconnect
 		socket.on('disconnect',function(data){
@@ -28,6 +32,7 @@ module.exports = function(app, io, db) {
 			roomsGL.forEach(function (r) {
 				socketonline[r.roomname].splice(socketonline.indexOf(socket.id),1);
 			});
+			onlineUsers.splice(onlineUsers.indexOf(userGL.username), 1);
 			console.log("disc:socketonline", socketonline);
         });
         
@@ -39,7 +44,7 @@ module.exports = function(app, io, db) {
 		socket.on('connected', function (data, callback){
             // console.log('connected:',data);
             callback(true);
-            var myRooms = userGL.rooms;
+            var myRooms = userGL.rooms.map(function(a){return a.roomname});
             //lets remodel all room objects with name + id, that'll make stuff a lot non-SQL-y
             //#makethemostoutofmongo
 			//verify user
@@ -48,15 +53,36 @@ module.exports = function(app, io, db) {
 				socket.username = data.username;
 				console.log('\x1b[36m%s\x1b[0m', userGL);
 				// console.log('\x1b[36m%s\x1b[0m', roomsGL);
-                userGL.rooms.forEach(function(r){//for all rooms that i'm a part of, 
-                    //add me as a online user
+				console.log('=1',roomsGL);
+
+				// async.each(roomsGL, function (nameroomObj, callback) {
+				// 	if (online[nameroomObj.roomname])
+				// 		online[nameroomObj.roomname].push(data.username);
+				// 	else
+				// 		online[nameroomObj.roomname] = [data.username];
+				// 	callback();
+				// }, function (err) {
+				// 	if (err) { return console.log(err); }
+				// 	var postConnectObject = {
+				// 		status: 200,
+				// 		rooms: myRooms,//only rooms you are a part of
+				// 		online: online //online members in each room
+				// 	};
+				// 	console.log('=4', postConnectObject);
+				// 	socket.emit('post connect', postConnectObject);
+				// });
+				var onlineCount =0;
+                roomsGL.forEach(function(r){//for all rooms that i'm a part of, 
+					console.log('=2', r);
+				//add me as a online user
                     // online[r].push(data.username);
 					// online.push(data.username);//@todo move to intended 2d arch.
-					if(online[r])
-						online[r].push(data.username);
+					if(online[r.roomname])
+						online[r.roomname].push(data.username);
 					else
-						online[r] = [data.username];
-                })
+						online[r.roomname] = [data.username];
+					})
+				onlineCount++;
                     // online.push(data.username);//@todo remove.
                 // });
                 //update online users list with this new user
@@ -64,12 +90,22 @@ module.exports = function(app, io, db) {
                 // or something that shows who is active and who is not?
                 //rather just go with an object model with room object and ng- it with some js framework, angular? that parts later... program the sockets first...
                 //so just the online users in each array inside the rooms object.
-                //voila, could combine both arrays in O(1) and remove dupes using the new Set() method, find some method to keep the first one...
-                socket.emit('post connect',{
-                    status: 200,
-                    rooms: myRooms,//only rooms you are a part of
-                    online: online //online members in each room
-                });
+				//voila, could combine both arrays in O(1) and remove dupes using the new Set() method, find some method to keep the first one...
+				var runFlag =0;
+				console.log('=3', online, online.length);
+				console.log('=5', roomsGL, roomsGL.length);
+				setInterval(function(){
+					if (roomsGL.length <= onlineCount && runFlag == 0){
+						var postConnectObject = {
+							status: 200,
+							rooms: myRooms,//only rooms you are a part of
+							online: online //online members in each room
+						};
+						console.log('=4', postConnectObject);
+						socket.emit('post connect', postConnectObject);
+					runFlag =1;
+					}
+				},500)
 			}else{
 				io.sockets.emit('post connect',{status: 403});
 			}

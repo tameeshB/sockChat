@@ -4,14 +4,15 @@
 	</title>
 	<link rel="stylesheet" type="text/css" href="/css/chat.css">
 	<script src="/socket.io/socket.io.js"></script>
-	</head>
 	<script>
 		var myuser = '<%= user.username %>';
 		var userhash = '<%= user.hash %>';
 		var rooms = JSON.parse('<%- JSON.stringify(rooms) %>');
 		var messages = JSON.parse('<%- JSON.stringify(messages) %>');
 	</script>
-	<body>
+	<!-- @todo Feed these values directly to js -->
+</head>
+	<body ng-app="sockchat">
 		<nav class="navbar has-shadow is-black" id="mainNav" style="position:fixed;z-index:100;width:100%">
 			<div class="container">
 				<div class="navbar-brand">
@@ -106,7 +107,7 @@
 								<p class="control is-expanded">
 									<input class="input" id="msgTextBox" type="text" placeholder="<%= user.username %>: Enter Message here">
 								</p>
-								<p class="control ">
+							<p class="control ">
 									<a id="msgSendBtn" class="button is-primary">
 										Send
 									</a>
@@ -117,7 +118,7 @@
 				</div>
 			</div>
 
-			<div class="column is-2 messages hero is-fullheight is-black" id="feed-info">
+			<div class="column is-2 messages hero is-fullheight is-dark" id="feed-info">
 				<div class="column ">
 
 					<div class="panel" id="activeUserpanel">

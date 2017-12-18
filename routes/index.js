@@ -37,8 +37,7 @@ module.exports = function(app, passport, db) {
 		},function(err,docs){
 			if(err)
 				console.log(err);
-				rooms = docs;
-			console.log('DBGROOMS');
+			rooms = docs;
 			//filter message history
 			//message remodel
 			db.messages.find({

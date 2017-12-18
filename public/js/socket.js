@@ -15,7 +15,6 @@ $(function () {
     var $message = $("#msgTextBox");
     var $chat = $("#inbox-messages");
     //onload init
-   
     socket.emit('connected', {username: myuser, hash: userhash}, function (data) {
         if (data) {
             $("#userFormArea").fadeOut();

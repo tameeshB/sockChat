@@ -1,5 +1,5 @@
 html,body {
-  font-family: 'Open Sans', serif;
+  /* font-family: 'Open Sans', serif; */
   font-size: 14px;
   line-height: 1.5;
   height: 100%;
@@ -51,7 +51,7 @@ html,body {
 .messages {
   display:block;
   z-index: 1;
-  /* box-shadow: #000000 5px 1px 20px 2px; */
+ box-shadow: #000000 -5px -1px 20px 0px;
 }
 .message {
   display:block;
