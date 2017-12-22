@@ -1,11 +1,13 @@
 module.exports = function (app, passport, db) {
-	//user
+
+	//user login front
 	app.get('/login', function (req, res) {
 		res.render('login', {
 			message: req.flash('loginMessage')
 		});
-
 	});
+
+	
 	app.get('/register', function (req, res) {
 		if (!req.flash('prev')) {
 			//flash init
@@ -24,38 +26,66 @@ module.exports = function (app, passport, db) {
 		});
 
 	});
-	// app.get('/login', function (req, res, next) {
-	// 	passport.authenticate('local', function (err, user, info) {
-	// 		if (err) { return next(err); }
-	// 		if (!user) { return res.redirect('/login'); }
-	// 		req.logIn(user, function (err) {
-	// 			if (err) { return next(err); }
-	// 			return res.redirect('/users/' + user.username);
-	// 		});
-	// 	})(req, res, next);
-	// });
-	app.post('/api/register/:type(web|json)', isValidSignup, passport.authenticate('local-signup', {
-		successRedirect: '/login',
-		failureRedirect: '/register',
-		failureFlash: true
-	}));
+	
+	//user login api
+	// app.post('/api/register/:type(web|json)', isValidSignup, passport.authenticate('local-signup', {
+	// 	successRedirect: '/login',
+	// 	failureRedirect: '/register',
+	// 	failureFlash: true
+	// }));
+
+	app.post('/api/register/:type(web|json)', function (req, res, next) {
+		if (req.params.type == 'web') {
+			passport.authenticate('local-signup', function (err, user, info) {
+				if (err) { return next(err); }
+				if (!user) { return res.redirect('/register'); }
+				return res.redirect('/login');
+			})(req, res, next);
+		} else if (req.params.type == 'json'){
+			passport.authenticate('local-signup', function (err, user, info) {
+				if (err) { return res.json({ "status": 500, "message": err }); }
+				if (!user) { return res.json({ "status": 400, "message": req.flash('signupMessage') }); }
+				else 
+					return res.json({ "status": 200, "message": "Successsfully signed up. Please Login to continue." });
+			})(req, res, next);
+		}
+		
+	});
+
+	app.post('/api/login/:type(web|json)', function (req, res, next) {
+		if(req.params.type == 'web'){
+			passport.authenticate('local-login', function (err, user, info) {
+				if (err) { return next(err); }
+				if (!user) { return res.redirect('/login'); }
+				req.logIn(user, function (err) {
+					if (err) { return next(err); }
+					return res.redirect('/app');
+				});
+			})(req, res, next);
+		} else if(req.params.type=='json'){
+			passport.authenticate('local-login', function (err, user, info) {
+				if (err) { return res.json({"status" : 500,"message":err}); }
+				if (!user) { return res.json({ "status": 401, "message": "Invalid user credentials." }); }
+				req.logIn(user, function (err) {
+					if (err) { return next(err); }
+					return res.json({ "status": 200, "message": "Successful Login." });;
+				});
+			})(req, res, next);
+		}
+			
+	});
+
 
 	app.get('/addusername', isLoggedIn, function (req, res) {
-
+		//only usefull for post oauth
 	})
 	app.post('/addusername', isLoggedIn, function (req, res) {
-		
+		//only usefull for post oauth
 	})
-
-	app.post('/api/login/:type(web|json)', passport.authenticate('local-login', {
-		successRedirect: '/app',
-		failureRedirect: '/login',
-		failureFlash: true
-	}));
 
 
 	app.get('/profile', isLoggedIn, function (req, res) {
-		console.log()
+		console.log();
 		res.render('profile.ejs', {
 			user: req.user
 		});
@@ -78,7 +108,7 @@ module.exports = function (app, passport, db) {
 
 
 	//Utility functions
-	isLoggedIn: function isLoggedIn(req, res, next){
+	isLoggedIn: function isLoggedIn(req, res, next) {
 		console.log('check auth');
 		if (req.isAuthenticated()) {
 			console.log('isauth');
