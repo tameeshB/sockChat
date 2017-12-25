@@ -1,104 +1,108 @@
 <%- include head.ejs %>
-   <title>Login|SockChat</title>
-   <script src="/socket.io/socket.io.js"></script>
+  <title>Login|SockChat</title>
+  <script src="/socket.io/socket.io.js"></script>
   <link rel="stylesheet" type="text/css" href="/css/login.css">
-</head>
-<body>
-  <section class="hero is-success is-fullheight" id="main">
-  <div class="hero-head">
-    <nav class="navbar">
-      <div class="container">
-        <div class="navbar-brand">
-          <div id="sockChat" class="title">
-            <a href="/">
-              <img src="/images/logo/icon48.png" id="header_logo" alt="">
-              <h1>
-                <b>ock</b>Chat</h1>
-            </a>
-          </div>
-          <span class="navbar-burger burger" data-target="navbarMenu">
-            <span></span>
-            <span></span>
-            <span></span>
-          </span>
-        </div>
-        <div id="navbarMenu" class="navbar-menu">
-          <div class="navbar-end">
-            <a href="/" class="navbar-item">
-              Home
-            </a>
-            <a href="/register" class="navbar-item">
-              Register
-            </a>
-            <a href="/login" class="navbar-item is-active">
-              Login
-            </a>
-            <span class="navbar-item">
-              <a class="button is-white is-outlined is-small" href="">
-                <span class="icon">
-                  <i class="fa fa-github"></i>
-                </span>
-                <span>View Source</span>
-              </a>
-            </span>
-          </div>
-        </div>
-      </div>
-    </nav>
-  </div>
-    <div class="hero-body">	
-      <div class="container has-text-centered" id="mainArea">
-        <div class="column is-4 is-offset-4">
-          <h3 class="title has-text-grey">Login</h3>
-          <p class="subtitle has-text-grey">Please login to proceed.</p><br>
-          <div class="box">
-            <figure class="avatar">
-              <img src="/images/logo/icon144.png">
-            </figure>
-            <form action="/api/login/web" method="post"><br><br>
-            	<% if (message.length > 0) { %>
-					<div class="notification is-danger">
-					  <%= message%>
-					</div>	
-			   <% } %>
-            	
-              <div class="field">
-                <div class="control">
-                  <input class="input is-large" type="email" name="email" placeholder="Your Email" autofocus="">
-                </div>
-              </div>
+  </head>
 
-              <div class="field">
-                <div class="control">
-                  <input class="input is-large" type="password" name="password" placeholder="Your Password">
-                </div>
+  <body>
+    <section class="hero is-success is-fullheight" id="main">
+      <div class="hero-head">
+        <nav class="navbar">
+          <div class="container">
+            <div class="navbar-brand">
+              <div id="sockChat" class="title">
+                <a href="/">
+                  <img src="/images/logo/icon48.png" id="header_logo" alt="">
+                  <h1>
+                    <b>ock</b>Chat</h1>
+                </a>
               </div>
-             <!--  <div class="field">
+              <span class="navbar-burger burger" data-target="navbarMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            </div>
+            <div id="navbarMenu" class="navbar-menu">
+              <div class="navbar-end">
+                <a href="/" class="navbar-item">
+                  Home
+                </a>
+                <a href="/register" class="navbar-item">
+                  Register
+                </a>
+                <a href="/login" class="navbar-item is-active">
+                  Login
+                </a>
+                <span class="navbar-item">
+                  <a class="button is-white is-outlined is-small" href="">
+                    <span class="icon">
+                      <i class="fa fa-github"></i>
+                    </span>
+                    <span>View Source</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <div class="hero-body">
+        <div class="container has-text-centered" id="mainArea">
+          <div class="column is-4 is-offset-4">
+            <h3 class="title has-text-grey">Login</h3>
+            <p class="subtitle has-text-grey">Please login to proceed.</p>
+            <br>
+            <div class="box">
+              <figure class="avatar">
+                <img src="/images/logo/icon144.png">
+              </figure>
+              <form action="/api/login/web" method="post">
+                <br>
+                <br>
+                <% if (message.length > 0) { %>
+                  <div class="notification is-danger">
+                    <%= message%>
+                  </div>
+                  <% } %>
+
+                    <div class="field">
+                      <div class="control">
+                        <input class="input is-large" type="email" name="email" placeholder="Your Email" autofocus="">
+                      </div>
+                    </div>
+
+                    <div class="field">
+                      <div class="control">
+                        <input class="input is-large" type="password" name="password" placeholder="Your Password">
+                      </div>
+                    </div>
+                    <!--  <div class="field">
                 <label class="checkbox">
                   <input type="checkbox">
                   Remember me
                 </label>
               </div> -->
-              <input type="submit" value='Login' class="button is-block is-info is-large" style="width:100%">
-              <br>
-              
-            </form>
-            <button class="loginBtn loginBtn--facebook" onclick="window.location='/auth/facebook'">
-              Login with Facebook
-            </button>
+                    <input type="submit" value='Login' class="button is-block is-info is-large" style="width:100%">
+                    <br>
+
+              </form>
+              <button class="loginBtn loginBtn--facebook" onclick="window.location='/auth/facebook'">
+                Login with Facebook
+              </button>
 
               <!-- <button class="loginBtn loginBtn--google">
                               Login with Google
                             </button> -->
               <!-- <a class="button is-block is-info is-large">Login</a> -->
+            </div>
+            <p class="has-text-grey">
+              <a href="/register">Sign Up</a> &nbsp;·&nbsp;
+              <a href="#">Forgot Password</a> &nbsp;·&nbsp;
+              <a href="#">Need Help?</a>
+            </p>
           </div>
-          <p class="has-text-grey">
-            <a href="/register">Sign Up</a> &nbsp;·&nbsp;
-            <a href="#">Forgot Password</a> &nbsp;·&nbsp;
-            <a href="#">Need Help?</a>
-          </p>
         </div>
       </div>
-    </div>
-  </section>
-<%- include footer.ejs %>
+    </section>
+    <%- include footer.ejs %>

@@ -261,3 +261,6 @@ body{
 a.panel-block:hover{
   background-color: #525252;
 }
+#roomsList>div>a{
+  margin-bottom: 20px;
+}

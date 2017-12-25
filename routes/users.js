@@ -1,5 +1,5 @@
 module.exports = function (app, passport, db) {
-	
+
 	//user login front
 	app.get('/login', function (req, res) {
 		res.render('login', {
@@ -89,11 +89,11 @@ module.exports = function (app, passport, db) {
 		passport.authenticate('facebook', {
 			successRedirect: '/app',
 			failureRedirect: '/register'
-	}));
+		}));
 
 
 	//Utility functions
-	isLoggedIn: function isLoggedIn(req, res, next){
+	isLoggedIn: function isLoggedIn(req, res, next) {
 		console.log('check auth');
 		if (req.isAuthenticated()) {
 			console.log('isauth');
@@ -107,7 +107,8 @@ module.exports = function (app, passport, db) {
 		}
 		console.log('isNOTauth');
 		// if they aren't redirect them to the home page
-		res.redirect('/');
+		req.flash('loginMessage', req.flash('loginMessage')+ "You must login first.")
+		res.redirect('/login');
 	}
 
 	function isValidSignup(req, res, next) {

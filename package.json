@@ -44,8 +44,16 @@
     "passport-twitter": "*",
     "path": "*",
     "querystring": "^0.2.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "serve-favicon": "^2.4.5",
     "socket.io": "^2.0.4",
     "wait.for": "^0.6.6"
+  },
+  "devDependencies": {
+    "babelify": "^8.0.0",
+    "browserify": "^14.5.0",
+    "gulp": "^3.9.1",
+    "vinyl-source-stream": "^2.0.0"
   }
 }
