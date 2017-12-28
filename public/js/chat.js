@@ -89,15 +89,46 @@ class RoomsContainer extends React.Component {
 }
 
 //two callbacks for new thread
-const NewThread = (props) => {
-    var handleClick = () => {
-        this.props.onClickFunction();
+class MsgBox extends React.Component {
+    componentDidMount() {
+        // messageBoxResize();
+        $("#messageSend").width($("#message-feed").width());
     }
-    return (
-        <a onClick={handleClick} className="button is-danger is-block is-bold">
-            <span className="compose">New Thread</span>
-        </a>
-    );
+    sendMessage() {
+        var msgTextBoxVal = document.getElementById("msgTextBox").value;
+        console.log(msgTextBoxVal);
+        document.getElementById("msgTextBox").value = '';
+        socket.emit('send message', {
+            message: msgTextBoxVal,
+            room: this.props.currRoom.roomname
+        });
+    }
+    _handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            document.getElementById("msgSendBtn").click();
+        }
+    }
+    render() {
+        return (
+            <div className="hero-foot" id="makeVisible">
+                <div className="container">
+                    <div className="tabs is-centered">
+                        <div className="field has-addons" id="messageSend" >
+                            <p className="control is-expanded">
+                                <input className="input" id="msgTextBox" type="text" placeholder="{{myuser}}: Enter Message here" onKeyPress={this._handleKeyPress} />
+                            </p>
+                            <p className="control ">
+                                <a id="msgSendBtn" onClick={this.sendMessage} className="button is-primary">
+                                    Send
+                            </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
 }
 
 
@@ -149,7 +180,13 @@ class MessageArea extends React.Component {
     }
     render() {//class component
         return (
-            <MsgThread messages={this.state.messages} />
+            <div>
+                <div class="inbox-messages" id="inbox-messages">
+                    <MsgThread messages={this.state.messages} />
+                </div> 
+                <MsgBox />
+            </div>
+            
         );
     }
 }
@@ -200,7 +237,7 @@ const OnlineUser = (prop) => {
 
 ReactDOM.render(
     <MessageArea />,
-    document.getElementById('inbox-messages')
+    document.getElementById('message-feed')
 );
 
 
