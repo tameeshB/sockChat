@@ -1,4 +1,4 @@
-
+var currRoom =0;
 /**
  * Room list
  */
@@ -32,6 +32,7 @@ class RoomsContainer extends React.Component {
     state = {
         rooms: []
     };
+   
     componentDidMount() {
         var socket = io.connect();
         socket.emit('connected', {
@@ -46,18 +47,10 @@ class RoomsContainer extends React.Component {
             this.setState({
                 rooms: data.rooms
             });
+            currRoom = this.state.rooms[0];
         }.bind(this));
     }
-    render() {//class component
-        return (
-            <Rooms rooms={this.state.rooms} />
-        );
-    }
-}
-
-//two callbacks for new thread
-const NewThread = (props) => {
-    function newThreadPrompt() {
+    newThreadPrompt() {
         var roomName = prompt("Enter the roomname", "Room name here");
         if (roomName == '' || roomName == null) {
             alert('Roomname empty!');
@@ -76,16 +69,37 @@ const NewThread = (props) => {
                     password: roomPass
                 }, function (data) {
                     //append to rooms
+                    
                 });
             });
         }
     }
+    render() {//class component
+        return (
+            <div>
+                <div className="compose has-text-centered" id="newThreadParent">
+                    <NewThread onClickFunction={this.newThreadPrompt}  />
+                </div>
+                <div className="main">
+                    <Rooms rooms={this.state.rooms} />
+                </div>
+            </div>
+        );
+    }
+}
+
+//two callbacks for new thread
+const NewThread = (props) => {
+    var handleClick = () => {
+        this.props.onClickFunction();
+    }
     return (
-        <a onClick={newThreadPrompt} className="button is-danger is-block is-bold">
-            <span class="compose">New Thread</span>
+        <a onClick={handleClick} className="button is-danger is-block is-bold">
+            <span className="compose">New Thread</span>
         </a>
     );
 }
+
 
 /**
  * Message thread
@@ -131,20 +145,14 @@ class MessageArea extends React.Component {
         ]
     };
     componentDidMount() {
-        
+        console.log("msgarea:",currRoom);
     }
     render() {//class component
         return (
             <MsgThread messages={this.state.messages} />
         );
     }
-
-   
 }
-
-
-
-
 
 
 /**
@@ -190,26 +198,26 @@ const OnlineUser = (prop) => {
 //     }
 // }
 
-// ReactDOM.render(
-//     <MessageArea />,
-//     document.getElementById('inbox-messages')
-// );
+ReactDOM.render(
+    <MessageArea />,
+    document.getElementById('inbox-messages')
+);
+
 
 // ReactDOM.render(
 //     <OnlineUsers />,
 //     document.getElementById('activeUserpanel')
 // );
-ReactDOM.render(
-    <NewThread />,
-    document.getElementById('newThreadParent')
-);
-
+// ReactDOM.render(
+//     <NewThread />,
+//     document.getElementById('newThreadParent')
+// );
 ReactDOM.render(
     <RoomsContainer />,
-    document.getElementById('roomsList')
+    document.getElementById('conv-list')
 );
 
 // ReactDOM.render(
-//     <Heylo />,
-//     document.getElementById('activeUserpanel')
+//     <RoomsContainer />,
+//     document.getElementById('roomsList')
 // );

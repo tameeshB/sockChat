@@ -12,9 +12,10 @@
 		var rooms = JSON.parse('<%- JSON.stringify(rooms) %>');
 		var messages = JSON.parse('<%- JSON.stringify(messages) %>');
 	</script>
-	<script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-	<script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
-	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.js"></script>
+	<script src="/js/react.production.min.js"></script>
+	<script src="/js/react-dom.production.min.js"></script>
+	<script src="/js/babel.min.js"></script>
 	<!-- @todo Feed these values directly to js -->
 	<script type="text/babel" src="/js/chat.js"></script>
 	</head>
@@ -71,15 +72,7 @@
 
 		<div class="columns" id="mail-app">
 			<aside class="column is-3 aside hero is-fullheight is-dark" id="conv-list">
-				<div>
-					<div class="compose has-text-centered" id="newThreadParent">
-						
-					</div>
-					<div class="main" id="roomsList">
-						
-
-					</div>
-				</div>
+				
 			</aside>
 
 			<div class="column is-7 messages hero is-fullheight" id="message-feed">
@@ -121,11 +114,6 @@
 		</div>
 
 		</div>
-
-		<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.3/vue.min.js" integrity="sha256-5CEXP4Sh+bwJYBngjYYh2TEev9kTDwcjw60jZatTHtY="
-	 crossorigin="anonymous"></script> -->
-		<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js" integrity="sha256-QHdJObhDO++VITP6S4tMlDHRWMaUOk+s/xWIRgF/YY0="
-	 crossorigin="anonymous"></script> -->
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js" integrity="sha256-4PIvl58L9q7iwjT654TQJM+C/acEyoG738iL8B8nhXg="
 		    crossorigin="anonymous"></script>
 		<!-- <script src="/js/socket.js" type="text/javascript"></script> -->
