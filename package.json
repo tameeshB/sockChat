@@ -4,13 +4,15 @@
   "description": "Chat app using sockets.io on node.js and express",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack && npm start",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tameeshB/sockChat.git"
   },
-  "author": "",
+  "author": "tameeshb",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/tameeshB/sockChat/issues"
@@ -44,16 +46,42 @@
     "passport-twitter": "*",
     "path": "*",
     "querystring": "^0.2.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
     "serve-favicon": "^2.4.5",
     "socket.io": "^2.0.4",
-    "wait.for": "^0.6.6"
+    "wait.for": "^0.6.6",
+    "babel-core": "^6.10.4",
+    "babel-loader": "^6.2.4",
+    "babel-polyfill": "^6.9.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.11.1",
+    "babel-register": "^6.9.0",
+    "cross-env": "^1.0.8",
+    "css-loader": "^0.23.1",
+    "expect": "^1.20.1",
+    "node-libs-browser": "^1.0.0",
+    "node-sass": "^3.8.0",
+    "react-addons-test-utils": "^15.1.0",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2",
+    "redux-logger": "^2.6.1",
+    "redux-promise": "^0.5.3",
+    "redux-thunk": "^2.1.0",
+    "sass-loader": "^4.0.0",
+    "style-loader": "^0.13.1",
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-dev-server": "^1.14.1",
+    "webpack-hot-middleware": "^2.11.0"
   },
   "devDependencies": {
+    "babel-plugin-react-transform": "^2.0.2",
+    "babel-preset-stage-0": "^6.5.0",
     "babelify": "^8.0.0",
     "browserify": "^14.5.0",
     "gulp": "^3.9.1",
-    "vinyl-source-stream": "^2.0.0"
+    "react-transform-hmr": "^1.0.4",
+    "vinyl-source-stream": "^2.0.0",
+    "webpack": "^1.15.0"
   }
 }

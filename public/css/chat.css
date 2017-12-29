@@ -256,11 +256,22 @@ body{
   
 }
 #message-feed{
-      padding-bottom: 100px;
+      /* padding-bottom: 100px; */
 }
 a.panel-block:hover{
   background-color: #525252;
 }
 #roomsList>div>a{
   margin-bottom: 20px;
+}
+#makeVisible{
+  bottom: 0;
+  position: fixed;
+}
+#message-feed>div{
+  height:92%;
+
+}
+#inbox-messages{
+height: 100%;
 }

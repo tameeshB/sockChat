@@ -1,4 +1,11 @@
 var currRoom =0;
+var socket = io.connect();
+socket.emit('connected', {
+    username: myuser,
+    hash: userhash
+}, function (data) {
+    // alert('connected');
+});
 /**
  * Room list
  */
@@ -34,13 +41,7 @@ class RoomsContainer extends React.Component {
     };
    
     componentDidMount() {
-        var socket = io.connect();
-        socket.emit('connected', {
-            username: myuser,
-            hash: userhash
-        }, function (data) {
-            // alert('connected');
-        });
+        
         socket.on('post connect', function (data) {
             console.log('post connect:', data);
             console.log(data.rooms);
@@ -78,7 +79,9 @@ class RoomsContainer extends React.Component {
         return (
             <div>
                 <div className="compose has-text-centered" id="newThreadParent">
-                    <NewThread onClickFunction={this.newThreadPrompt}  />
+                    <a onClickFunction={this.newThreadPrompt} className="button is-danger is-block is-bold">
+                        <span className="compose">New Thread</span>
+                    </a>
                 </div>
                 <div className="main">
                     <Rooms rooms={this.state.rooms} />
