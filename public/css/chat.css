@@ -171,7 +171,7 @@ html,body {
   color: #AAAAAA;
 }
 .inbox-messages {
-  margin-top:60px;
+  /* margin-top:60px; */
 }
 .message-preview {
   margin-top: 60px;
@@ -274,4 +274,10 @@ a.panel-block:hover{
 }
 #inbox-messages{
 height: 100%;
+}
+#currRoomName{
+  font-size: 2em;
+  color: #FFFFFF;
+  text-transform: capitalize;
+  padding-left: 40px;
 }

@@ -1,10 +1,124 @@
-var currRoom =0;
+// const { Provider } = ReactRedux;
+var createStore = Redux.createStore;
+var Provider = ReactRedux.Provider;
+var connect = ReactRedux.connect;
+/**
+ * ~~Redux~~
+ * 
+ */
+
+var initialState = {
+    data: [],
+    rooms: [],
+    // users: [],
+    messages: [],
+    onlineUsers: [],
+    currentRoom: "",
+    url: "/api/comments",
+    pollInterval: 2000
+}
+
+var reducer = function (state, action) {//@todo
+    if (state === undefined) {
+        return initialState;
+    }
+    var newState = state;
+    switch (action.type) {
+        case 'change_room':
+            var newRoom = action.room;
+            newState = Object.assign({}, state, { currentRoom: newRoom });
+            break;
+        case 'write_rooms':
+            // var newRooms = state.rooms.concat([action.rooms]);
+            newState = Object.assign({}, state, { rooms: action.rooms })
+            break;
+        case 'add_message':
+            // var newRooms = state.rooms.concat([action.rooms]);
+            newState = Object.assign({}, state, { messages: action.message })
+            break;
+        case 'new_messages':
+            // var newRooms = state.rooms.concat([action.rooms]);
+            newState = Object.assign({}, state, { messages: action.messages })
+            break;
+    }
+    return newState;
+}
+
+var store = createStore(reducer, initialState);
+
+var RoomListState = function (state) {
+    return {
+        currentRoom: state.currentRoom,
+        rooms : state.rooms
+    }
+}
+//this.props.[whatever]
+
+var MessagesState = function (state) {
+    return {
+        currentRoom: state.currentRoom,
+        messages: state.messages
+    }
+}
+
+
+var RoomInfoState = function (state) {
+    return {
+        currentRoom: state.currentRoom,
+        onlineUsers: state.onlineUsers
+    }
+}
+
+
+var RoomDispatch = function (dispatch) {
+    return {
+        changeRoom: function (roomName) {
+            // comment.id = Date.now();
+            dispatch({
+                type: 'change_room',
+                room: roomName,
+            })
+        },
+        writeRooms: function (roomsArray) {
+            // comment.id = Date.now();
+            dispatch({
+                type: 'write_rooms',
+                rooms: roomsArray,
+            })
+        },
+        addMessage: function (message) {
+            // comment.id = Date.now();
+            dispatch({
+                type: 'add_message',
+                room: roomName,
+            })
+        },
+        newMessages: function (messages) {
+            // comment.id = Date.now();
+            dispatch({
+                type: 'new_messages',
+                rooms: roomsArray,
+            })
+        }
+    }
+}
+
+// var MessagesDispatch = function (dispatch) {
+//     return {
+        
+//     }
+// }
+
+/**
+ * ~~React.JS~~
+ * 
+ */
 var socket = io.connect();
 socket.emit('connected', {
     username: myuser,
     hash: userhash
 }, function (data) {
-    // alert('connected');
+    console.log(data);
 });
 /**
  * Room list
@@ -15,7 +129,7 @@ const RoomTab = (props) => {//function component
             <span className="icon">
                 <i className="fa fa-inbox"></i>
             </span>
-            <span className="name">{props.username}</span>
+            <span className="name">{props.roomname}</span>
         </a>
     );
 };
@@ -25,7 +139,7 @@ class Rooms extends React.Component {
     render() {//class component
         return (
             <div>
-                {this.props.rooms.map(user => <RoomTab username={user} />)}
+                {this.props.rooms_.map(room_ => <RoomTab roomname={room_} />)}
             </div>
         );
     }
@@ -36,19 +150,19 @@ class Rooms extends React.Component {
 //init is done by rooms 
 //and on init connect, server emmits first set of messages.
 class RoomsContainer extends React.Component {
-    state = {
-        rooms: []
-    };
-   
+//    this.props.data
+/*
+    Props that hold state:
+      this.props.data; this.props.url; this.props.pollInterval
+    Props that dispatch actions:
+      this.props.addComment(comment); this.props.setComments(data)
+    */
     componentDidMount() {
         
         socket.on('post connect', function (data) {
             console.log('post connect:', data);
-            console.log(data.rooms);
-            this.setState({
-                rooms: data.rooms
-            });
-            currRoom = this.state.rooms[0];
+            this.props.writeRooms(data.rooms);
+            this.props.changeRoom(data.rooms[0]);
         }.bind(this));
     }
     newThreadPrompt() {
@@ -79,12 +193,12 @@ class RoomsContainer extends React.Component {
         return (
             <div>
                 <div className="compose has-text-centered" id="newThreadParent">
-                    <a onClickFunction={this.newThreadPrompt} className="button is-danger is-block is-bold">
+                    <a onClick={this.newThreadPrompt} className="button is-danger is-block is-bold">
                         <span className="compose">New Thread</span>
                     </a>
                 </div>
                 <div className="main">
-                    <Rooms rooms={this.state.rooms} />
+                    <Rooms rooms_={this.props.rooms} />
                 </div>
             </div>
         );
@@ -93,17 +207,21 @@ class RoomsContainer extends React.Component {
 
 //two callbacks for new thread
 class MsgBox extends React.Component {
+    constructor(props) {
+        super(props);
+        this.sendMessage = this.sendMessage.bind(this);
+    }
     componentDidMount() {
         // messageBoxResize();
         $("#messageSend").width($("#message-feed").width());
     }
     sendMessage() {
         var msgTextBoxVal = document.getElementById("msgTextBox").value;
-        console.log(msgTextBoxVal);
+        console.log("MessageSend:",msgTextBoxVal,"at", this.props.currentRoom_);
         document.getElementById("msgTextBox").value = '';
         socket.emit('send message', {
             message: msgTextBoxVal,
-            room: this.props.currRoom.roomname
+            room: this.props.currentRoom_
         });
     }
     _handleKeyPress(e) {
@@ -160,7 +278,7 @@ class MsgThread extends React.Component {
     render() {//class component
         return (
             <div>
-                {/* {this.props.messages.map(card => <MsgBubble {...card} />)} */}
+                {this.props.messages_.map(card => <MsgBubble {...card} />)}
             </div>
         );
     }
@@ -168,26 +286,24 @@ class MsgThread extends React.Component {
 
 
 class MessageArea extends React.Component {
-    state = {
-        messages: [
-            {
-                _id: 12413524634523,
-                user: "tameeshb",
-                time: "10m",
-                message: "Hi!"
-            }
-        ]
-    };
+    // addMessage,newMessages //write using socket.io
+    /*
+    Props that hold state:
+      this.props.data; this.props.url; this.props.pollInterval
+    Props that dispatch actions:
+      this.props.addComment(comment); this.props.setComments(data)
+    */
     componentDidMount() {
-        console.log("msgarea:",currRoom);
+        // console.log("msgarea:",currRoom);
     }
     render() {//class component
         return (
             <div>
+                <h1 id="currRoomName">{this.props.currentRoom}</h1>
                 <div class="inbox-messages" id="inbox-messages">
-                    <MsgThread messages={this.state.messages} />
+                    <MsgThread messages_={this.props.messages} />
                 </div> 
-                <MsgBox />
+                <MsgBox currentRoom_={this.props.currentRoom} />
             </div>
             
         );
@@ -208,52 +324,58 @@ const OnlineUser = (prop) => {
     );
 }
 
-// class OnlineUsers extends React.Component {
-//     state = {
-//         onlineUsers: []
-//     };
-//     componentDidMount() {
-//         socket.on('post connect', function (data) {
-//             console.log('post connect:', data);
+class OnlineUsers extends React.Component {
+    componentDidMount() {
+       
+    }
+    render() {//class component
+        return (
+            <div>
+            <p className="panel-heading">
+                Active users
+            </p>
+            <div>
+                    {this.props.onlineUsers.map(onlineUser => <OnlineUser  />)}
+            </div>
+            </div>
+        );
+    }
+}
 
-//         });
-//         socket.on('new user', function (data) {
-//             console.log('post connect:', data);
+RoomsContainer = connect(
+    RoomListState,
+    RoomDispatch
+)(RoomsContainer)
+MessageArea = connect(
+    MessagesState
+)(MessageArea)
+OnlineUsers = connect(
+    RoomInfoState
+)(OnlineUsers)
 
-//         });
-//         socket.on('newRoomInfo', function (data) {
-//             console.log('post connect:', data);
-
-//         });
-//     }
-//     render() {//class component
-//         return (
-//             <p className="panel-heading">
-//                 Active users
-//             </p>
-//             <div>
-//             { this.props.onlineUsers.map(onlineUser => <OnlineUser  />)}
-//             </div>
-//         );
-//     }
-// }
 
 ReactDOM.render(
-    <MessageArea />,
+    <Provider store={store}>
+        <MessageArea />
+    </Provider >,
     document.getElementById('message-feed')
 );
 
 
-// ReactDOM.render(
-//     <OnlineUsers />,
-//     document.getElementById('activeUserpanel')
-// );
+ReactDOM.render(
+    <Provider store={store}>
+        <OnlineUsers />
+    </Provider>,
+    document.getElementById('activeUserpanel')
+);
 // ReactDOM.render(
 //     <NewThread />,
 //     document.getElementById('newThreadParent')
 // );
 ReactDOM.render(
-    <RoomsContainer />,
+    <Provider store={store}>
+        <RoomsContainer />
+    </Provider>,
     document.getElementById('conv-list')
 );
 
