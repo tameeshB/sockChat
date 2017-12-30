@@ -47,6 +47,11 @@ var reducer = function (state, action) {//@todo
             // var newRooms = state.rooms.concat([action.rooms]);
             newState = Object.assign({}, state, { rooms: action.rooms })
             break;
+        case 'new_room':
+            var newRooms = state.rooms.concat([action.room]);
+            newState = Object.assign({}, state, { rooms: newRooms})
+            // newState = Object.assign({}, state, { rooms: newRooms }) //@todo
+            break; 
         case 'add_message':
             var newMessages = state.messages.concat([action.message]);
             newState = Object.assign({}, state, { messages: newMessages })
@@ -94,6 +99,13 @@ var RoomDispatch = function (dispatch) {
             dispatch({
                 type: 'change_room',
                 room: roomName,
+            })
+        },
+        newRoom: function (room) {
+            // comment.id = Date.now();
+            dispatch({
+                type: 'new_room',
+                room: room,
             })
         },
         writeRooms: function (roomsArray) {
@@ -221,21 +233,26 @@ class RoomsContainer extends React.Component {
         } else {
             socket.emit('roomNameCheck', {
                 roomName: roomName
-            }, function (data) {
+            });
+            socket.on('roomNameCheckRet', function (data) {
+                console.log("roomNameCheckRet",data);
                 if (data.status == 409) {
                     var roomPass = prompt("Enter the room access password", "Password here");
-                } else if (data.status = 200) {
+                } else if (data.status == 200) {
                     var roomPass = prompt("Enter desired password for new room. Leave blank for no password", "Password here");
+                }else{
+                    alert(data.message);
+                    return;
                 }
                 socket.emit('roomPassCheck', {
                     username: myuser,
                     roomName: roomName,
                     password: roomPass
-                }, function (data) {
-                    //append to rooms
-                    
                 });
-            });
+                socket.on('roomPassCheckRet',function(data_){
+                    console.log(data_);
+                })
+            })
         }
     }
     render() {//class component
@@ -263,7 +280,7 @@ class MsgBox extends React.Component {
     componentDidMount() {
         // messageBoxResize();
         $("#messageSend").width($("#message-feed").width());
-        socket.on
+        // socket.on
     }
     sendMessage() {
         var msgTextBoxVal = document.getElementById("msgTextBox").value;

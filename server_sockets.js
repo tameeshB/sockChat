@@ -125,24 +125,50 @@ module.exports = function (app, io, db) {
 			});
 		})
 		//problem now is that if one user is requesting to be added to a room, the callback goes to all other online users
-
-		//new room or join room
-		//data: {roomname, /*roomid*/, password}//modify
-		socket.on('room add', function (data, callback) {
-			var newrooms_ = userGL.rooms.map(a => a.roomname);
-			var newRoomId = -1;
-			var newRoom = {};
-			callback(true);
-			// console.log('before sw', data.roomname, data.password);
-			//@async
+		socket.on('roomNameCheck', function(data){
+			// callback(true);
 			db.rooms.findOne({
-				'roomname': data.roomname
+				'roomname': data.roomName
 			}, function (err, doc) {
 				// console.log('roomauth find', doc);
 				if (err) {
 					console.log("_err");
 					console.log(err);
-					socket.emit('post room add', {
+					socket.emit('roomNameCheckRet', {
+						status: 500,
+						message: 'Some Internal error occured.'
+					});
+				}
+				if (!doc) {
+					socket.emit('roomNameCheckRet', {
+						status: 200,
+						message: 'Can create.'
+					});
+				} else if(doc) {
+					socket.emit('roomNameCheckRet', {
+						status: 409,
+						message: 'Exists.'
+					});
+				}
+			});
+		})
+		//new room or join room
+		//data: {roomname, /*roomid*/, password}//modify
+		socket.on('roomPassCheck', function (data) {
+			var newrooms_ = roomsGL.map(a => a.roomname);
+			var newRoomId = -1;
+			var newRoom = {};
+			console.log("roomPassCheck",data);
+			// console.log('before sw', data.roomname, data.password);
+			//@async
+			db.rooms.findOne({
+				'roomname': data.roomName
+			}, function (err, doc) {
+				// console.log('roomauth find', doc);
+				if (err) {
+					console.log("_err");
+					console.log(err);
+					socket.emit('roomPassCheckRet', {
 						status: 500,
 						message: 'Some Internal error occured.'
 					});
@@ -150,7 +176,7 @@ module.exports = function (app, io, db) {
 				if (!doc) {
 					console.log("_nodoc");
 					db.rooms.insert({
-						'roomname': data.roomname,
+						'roomname': data.roomName,
 						'password': genHash(data.password),
 						'users': [socket.username]
 					}, function (err, inserted) {
@@ -161,15 +187,15 @@ module.exports = function (app, io, db) {
 							$push: {
 								rooms: {
 									id: newRoomId,
-									roomname: data.roomname
+									roomname: data.roomName
 								}
 							}
 						}, function (err, data__) { //callback
 							roomsGL.push({
 								id: newRoomId,
-								roomname: data.roomname
+								roomname: data.roomName
 							});
-							socket.emit('post room add', {
+							socket.emit('roomPassCheckRet', {
 								status: 200,
 								message: 'Created new room!',
 								newId: newRoomId,
@@ -191,7 +217,7 @@ module.exports = function (app, io, db) {
 						// console.log("_dbg2",data.roomname);
 						// console.log("_dbg3", newrooms_.indexOf('ookkk'));
 
-						if (newrooms_.indexOf(data.roomname) >= 0) {
+						if (newrooms_.indexOf(data.roomName) >= 0) {
 							//nothing
 						} else {
 							console.log('\x1b[36m%s\x1b[0m', "DID NOT DETECT ROOM");
@@ -200,14 +226,14 @@ module.exports = function (app, io, db) {
 							//can add user to group
 							//@async
 							db.rooms.find({
-								roomname: data.roomname
+								roomname: data.roomName
 							}, function (err, docs) {
 								newRoomId = docs._id;
 								newRoom = docs;
 							})
 							roomsGL.push({
 								id: newRoomId,
-								roomname: data.roomname
+								roomname: data.roomName
 							});
 							db.users.update({
 								username: socket.username
@@ -215,19 +241,19 @@ module.exports = function (app, io, db) {
 								$push: {
 									rooms: {
 										id: newRoomId,
-										roomname: data.roomname
+										roomname: data.roomName
 									}
 								}
 							})
 							db.rooms.update({
-								roomname: data.roomname
+								roomname: data.roomName
 							}, {
 								$push: {
 									users: socket.username
 								}
 							})
 						}
-						socket.emit('post room add', {
+						socket.emit('roomPassCheckRet', {
 							status: 200,
 							message: 'Joined room!',
 							room: newRoom
@@ -236,7 +262,7 @@ module.exports = function (app, io, db) {
 						console.log("_noauth");
 						// return 3;//bad, unauthorised
 						ret = 3;
-						socket.emit('post room add', {
+						socket.emit('roomPassCheckRet', {
 							status: 401,
 							message: 'Room already exists, wrong authorization creds.'
 						});
