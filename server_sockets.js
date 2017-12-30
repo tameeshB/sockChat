@@ -3,11 +3,12 @@ var async = require('async');
 var wait = require('wait.for');
 var bcrypt = require('bcrypt-nodejs');
 module.exports = function (app, io, db) {
-	var connections = [];
-	var online = []; //points to online users?
-	var onlineUsers = [];
+	var connections = [];//for socket.io's buisness
+	var online = []; //usernamep per room
+	var onlineUsers = [];//linear list of all users, just for the record
 	//sockets
-	var socketonline = [];
+	var socketonline = [];//socketid per room online
+
 	io.sockets.on('connection', function (socket) {
 		connections.push(socket);
 		console.log('connected %s', connections.length);
@@ -17,21 +18,25 @@ module.exports = function (app, io, db) {
 				socketonline[r.roomname].push(socket.id);
 			else
 				socketonline[r.roomname] = [socket.id];
+			if (online[r.roomname])
+				online[r.roomname].push(userGL.username);
+			else
+				online[r.roomname] = [userGL.username];
 		});
-		onlineUsers.push(userGL.username);
 		// console.log("conn:socketonline",socketonline);
 		//disconnect
 		socket.on('disconnect', function (data) {
 			// if(!socket.username)
 			// 	return;
 			//remove me from online users object @todo
-			online.splice(online.indexOf(socket.username), 1);
 			connections.splice(connections.indexOf(socket), 1);
+			onlineUsers.splice(onlineUsers.indexOf(userGL.username), 1);
 			console.log('disconnected %s', connections.length);
 			roomsGL.forEach(function (r) {
-				socketonline[r.roomname].splice(socketonline.indexOf(socket.id), 1);
+				socketonline[r.roomname].splice(socketonline[r.roomname].indexOf(socket.id), 1);
+				online[r.roomname].splice(online[r.roomname].indexOf(userGL.username), 1);
 			});
-			onlineUsers.splice(onlineUsers.indexOf(userGL.username), 1);
+			
 			console.log("disc:socketonline", socketonline);
 		});
 
@@ -40,9 +45,10 @@ module.exports = function (app, io, db) {
 
 		//User connected
 		//data prototype: data:{username: , hash: } 
-		socket.on('connected', function (data, callback) {
+		socket.on('connected', function (data) {
+			console.log('connected');
 			// console.log('connected:',data);
-			callback(true);
+			// callback(true);
 			var myRooms = userGL.rooms.map(function (a) {
 				return a.roomname
 			});
@@ -55,35 +61,6 @@ module.exports = function (app, io, db) {
 				console.log('\x1b[36m%s\x1b[0m', userGL);
 				// console.log('\x1b[36m%s\x1b[0m', roomsGL);
 				console.log('=1', roomsGL);
-
-				// async.each(roomsGL, function (nameroomObj, callback) {
-				// 	if (online[nameroomObj.roomname])
-				// 		online[nameroomObj.roomname].push(data.username);
-				// 	else
-				// 		online[nameroomObj.roomname] = [data.username];
-				// 	callback();
-				// }, function (err) {
-				// 	if (err) { return console.log(err); }
-				// 	var postConnectObject = {
-				// 		status: 200,
-				// 		rooms: myRooms,//only rooms you are a part of
-				// 		online: online //online members in each room
-				// 	};
-				// 	console.log('=4', postConnectObject);
-				// 	socket.emit('post connect', postConnectObject);
-				// });
-				var onlineCount = 0;
-				roomsGL.forEach(function (r) { //for all rooms that i'm a part of, @todo: refactor
-					console.log('=2', r);
-					//add me as a online user
-					// online[r].push(data.username);
-					// online.push(data.username);//@todo move to intended 2d arch.
-					if (online[r.roomname])
-						online[r.roomname].push(data.username);
-					else
-						online[r.roomname] = [data.username];
-				})
-				onlineCount++;
 				// online.push(data.username);//@todo remove.
 				// });
 				//update online users list with this new user
@@ -95,18 +72,15 @@ module.exports = function (app, io, db) {
 				var runFlag = 0;
 				console.log('=3', online, online.length);
 				console.log('=5', roomsGL, roomsGL.length);
-				setInterval(function () {
-					if (roomsGL.length <= onlineCount && runFlag == 0) {
-						var postConnectObject = {
-							status: 200,
-							rooms: myRooms, //only rooms you are a part of
-							online: online //online members in each room
-						};
-						console.log('=4', postConnectObject);
-						socket.emit('post connect', postConnectObject);
-						runFlag = 1;
-					}
-				}, 500)
+				var postConnectObject = {
+					status: 200,
+					rooms: myRooms, //only rooms you are a part of
+					online: online //online members in each room
+				};
+				console.log('=4:postconnectobj', postConnectObject);
+				socket.emit('post connect', postConnectObject);
+				console.log('emitted postconnect');
+				runFlag = 1;
 			} else {
 				io.sockets.emit('post connect', {
 					status: 403

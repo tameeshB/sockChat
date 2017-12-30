@@ -16,17 +16,7 @@ var initialState = {
         room :"test", 
         ts: "Sat Dec 30 2017 04:27:37 GMT+0530 (IST)",
         user : "testBitMore"
-    }, {
-            message: "bbb",
-            room: "test",
-            ts: "Sat Dec 30 2017 04:27:37 GMT+0530 (IST)",
-            user: "testBitMore"
-        }, {
-            message: "ccc",
-            room: "test",
-            ts: "Sat Dec 30 2017 04:27:37 GMT+0530 (IST)",
-            user: "testBitMore"
-        }],
+    }],
     onlineUsers: [],
     currentRoom: "",
     url: "/api/comments",
@@ -192,7 +182,7 @@ class RoomsContainer extends React.Component {
       this.props.addComment(comment); this.props.setComments(data)
     */
     componentDidMount() {
-        
+        console.log('mount Rooms container');
         socket.on('post connect', function (data) {
             console.log('post connect:', data);
             this.props.writeRooms(data.rooms);
