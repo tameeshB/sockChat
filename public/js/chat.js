@@ -11,7 +11,22 @@ var initialState = {
     data: [],
     rooms: [],
     // users: [],
-    messages: [],
+    messages: [{
+        message: "aaa", 
+        room :"test", 
+        ts: "Sat Dec 30 2017 04:27:37 GMT+0530 (IST)",
+        user : "testBitMore"
+    }, {
+            message: "bbb",
+            room: "test",
+            ts: "Sat Dec 30 2017 04:27:37 GMT+0530 (IST)",
+            user: "testBitMore"
+        }, {
+            message: "ccc",
+            room: "test",
+            ts: "Sat Dec 30 2017 04:27:37 GMT+0530 (IST)",
+            user: "testBitMore"
+        }],
     onlineUsers: [],
     currentRoom: "",
     url: "/api/comments",
@@ -33,8 +48,8 @@ var reducer = function (state, action) {//@todo
             newState = Object.assign({}, state, { rooms: action.rooms })
             break;
         case 'add_message':
-            // var newRooms = state.rooms.concat([action.rooms]);
-            newState = Object.assign({}, state, { messages: action.message })
+            var newMessages = state.messages.concat([action.message]);
+            newState = Object.assign({}, state, { messages: newMessages })
             break;
         case 'new_messages':
             // var newRooms = state.rooms.concat([action.rooms]);
@@ -49,7 +64,8 @@ var store = createStore(reducer, initialState);
 var RoomListState = function (state) {
     return {
         currentRoom: state.currentRoom,
-        rooms : state.rooms
+        rooms : state.rooms,
+        messages: state.messages
     }
 }
 //this.props.[whatever]
@@ -65,7 +81,8 @@ var MessagesState = function (state) {
 var RoomInfoState = function (state) {
     return {
         currentRoom: state.currentRoom,
-        onlineUsers: state.onlineUsers
+        onlineUsers: state.onlineUsers,
+        messages: state.messages
     }
 }
 
@@ -87,17 +104,18 @@ var RoomDispatch = function (dispatch) {
             })
         },
         addMessage: function (message) {
+            console.log("newaddmsgtrig",message);
             // comment.id = Date.now();
             dispatch({
                 type: 'add_message',
-                room: roomName,
+                room: message,
             })
         },
         newMessages: function (messages) {
             // comment.id = Date.now();
             dispatch({
                 type: 'new_messages',
-                rooms: roomsArray,
+                messages: messages,
             })
         }
     }
@@ -125,7 +143,7 @@ socket.emit('connected', {
  */
 const RoomTab = (props) => {//function component
     return (
-        <a href="#" className="item active">
+        <a className="item active" data-rn={props.roomname}>
             <span className="icon">
                 <i className="fa fa-inbox"></i>
             </span>
@@ -139,7 +157,7 @@ class Rooms extends React.Component {
     render() {//class component
         return (
             <div>
-                {this.props.rooms_.map(room_ => <RoomTab roomname={room_} />)}
+                {this.props.rooms_.map(room_ => <RoomTab roomname={room_} onClick={this.props.switchRoomEv} />)}
             </div>
         );
     }
@@ -150,6 +168,10 @@ class Rooms extends React.Component {
 //init is done by rooms 
 //and on init connect, server emmits first set of messages.
 class RoomsContainer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.switchRoom = this.switchRoom.bind(this);
+    }
 //    this.props.data
 /*
     Props that hold state:
@@ -163,8 +185,35 @@ class RoomsContainer extends React.Component {
             console.log('post connect:', data);
             this.props.writeRooms(data.rooms);
             this.props.changeRoom(data.rooms[0]);
+            this.fetchMessages(data.rooms[0]);
+        }.bind(this));
+
+        socket.on('new message', function (data) {
+            console.log('newMsg:', data);
+            this.props.addMessage(data);
+        }.bind(this));
+        
+    }
+
+    fetchMessages(roomN){
+        //@todo:switchtoajax maybe?
+        socket.emit('fetchMessages', {
+            roomname:roomN
+        });
+        this.props.changeRoom(roomN);
+        socket.on('fetchMessagesResponse',function(data){
+            console.log("check",data)
+            if (data) {
+                this.props.newMessages(data);
+            }
         }.bind(this));
     }
+
+    switchRoom(){
+        console.log('swr-called');
+        fetchMessages($(this).data('rn'));
+    }
+
     newThreadPrompt() {
         var roomName = prompt("Enter the roomname", "Room name here");
         if (roomName == '' || roomName == null) {
@@ -198,7 +247,7 @@ class RoomsContainer extends React.Component {
                     </a>
                 </div>
                 <div className="main">
-                    <Rooms rooms_={this.props.rooms} />
+                    <Rooms rooms_={this.props.rooms} switchRoomEv={this.switchRoom} />
                 </div>
             </div>
         );
@@ -214,6 +263,7 @@ class MsgBox extends React.Component {
     componentDidMount() {
         // messageBoxResize();
         $("#messageSend").width($("#message-feed").width());
+        socket.on
     }
     sendMessage() {
         var msgTextBoxVal = document.getElementById("msgTextBox").value;
@@ -236,7 +286,7 @@ class MsgBox extends React.Component {
                     <div className="tabs is-centered">
                         <div className="field has-addons" id="messageSend" >
                             <p className="control is-expanded">
-                                <input className="input" id="msgTextBox" type="text" placeholder="{{myuser}}: Enter Message here" onKeyPress={this._handleKeyPress} />
+                                <input className="input" id="msgTextBox" type="text" placeholder={myuser + ": Enter Message here"} onKeyPress={this._handleKeyPress} />
                             </p>
                             <p className="control ">
                                 <a id="msgSendBtn" onClick={this.sendMessage} className="button is-primary">
@@ -273,12 +323,37 @@ const MsgBubble = (props) => {//function component
     );
 };
 
+const MsgBubbleZero = (props) => {//function component
+    return (
+        <div className="box is-primary" >
+            <article className="media">
+                <div className="media-content">
+                    <div className="content" key={props._id}>
+                        <strong>There are no messages in this channel yet.</strong>
+                        <p>Please start the converstaion using the message box below.</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    );
+};
+
 
 class MsgThread extends React.Component {
+    constructor(props) {
+        super(props);
+        // this.sendMessage = this.sendMessage.bind(this);
+    }
+    // console.log(this.props);
     render() {//class component
         return (
             <div>
-                {this.props.messages_.map(card => <MsgBubble {...card} />)}
+                {/* {JSON.stringify(this.props.messages_)} */}
+                {
+                    (this.props.messages_ && this.props.messages_.length >0)?
+                    this.props.messages_.map(card => <MsgBubble {...card} />)
+                    :<MsgBubbleZero />
+                }
             </div>
         );
     }

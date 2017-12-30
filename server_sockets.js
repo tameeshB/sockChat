@@ -73,7 +73,7 @@ module.exports = function (app, io, db) {
 				// 	socket.emit('post connect', postConnectObject);
 				// });
 				var onlineCount = 0;
-				roomsGL.forEach(function (r) { //for all rooms that i'm a part of, 
+				roomsGL.forEach(function (r) { //for all rooms that i'm a part of, @todo: refactor
 					console.log('=2', r);
 					//add me as a online user
 					// online[r].push(data.username);
@@ -114,6 +114,16 @@ module.exports = function (app, io, db) {
 			}
 		});
 
+
+		socket.on('fetchMessages', function(data, callback){
+			// callback(true);
+			db.messages.find({
+				room: data.roomname
+			}, function (err, docs_) {//@todo: limit
+				console.log("pastmsgs:", docs_);
+				socket.emit('fetchMessagesResponse', docs_)
+			});
+		})
 		//problem now is that if one user is requesting to be added to a room, the callback goes to all other online users
 
 		//new room or join room
