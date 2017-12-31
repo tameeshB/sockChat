@@ -257,7 +257,15 @@ body{
 }
 .mymsg{
   background-color: #22543e87 !important;
-  
+  width: 90%;
+  margin-left:10%;
+}
+.is-primary{
+  width: 90%;
+  margin-right:10%;
+}
+.dynamicTimeStamp{
+  float: right;
 }
 #message-feed{
       /* padding-bottom: 100px; */
