@@ -114,9 +114,8 @@ html,body {
   font-weight: 500;
 }
 
-
 .messages {
-  padding: 40px 20px;
+  padding: 15px 20px;
 }
 .message {
   padding: 40px 20px;
@@ -284,7 +283,7 @@ height: 100%;
   font-size: 2em;
   color: #FFFFFF;
   text-transform: capitalize;
-  padding-left: 40px;
+  /* padding-left: 40px; */
 }
 
 /* scrollbar */

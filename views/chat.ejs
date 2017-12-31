@@ -9,8 +9,14 @@
 	<script>
 		var myuser = '<%= user.username %>';
 		var userhash = '<%= user.hash %>';
-		var rooms = JSON.parse('<%- JSON.stringify(rooms) %>');
-		var messages = JSON.parse('<%- JSON.stringify(messages) %>');
+		$(document).ready(function () {
+				setInterval(function () {
+					$(".dynamicTimeStamp").each(function () {
+						$(this).text(moment.parseZone($(this).data('ts'), "ddd MMM DD YYYY HH:mm:ss Z").fromNow());
+					});
+				}, 60000)
+
+			});
 	</script>
 	<script src="/js/mobile.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
@@ -23,16 +29,6 @@
 	<!-- @todo Feed these values directly to js -->
 	<script type="text/babel" src="/js/chat.js"></script>
 	</head>
-	<script>
-		$(document).ready(function(){
-			setInterval(function(){
-				$(".dynamicTimeStamp").each(function () {
-					$(this).text(moment.parseZone($(this).data('ts'), "ddd MMM DD YYYY HH:mm:ss Z").fromNow());
-				});
-			},60000)
-			
-		});
-	</script>
 	<body>
 		<nav class="navbar has-shadow is-black" id="mainNav" style="position:fixed;z-index:100;width:100%">
 			<div class="container">

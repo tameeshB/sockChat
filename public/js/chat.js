@@ -169,19 +169,22 @@ socket.emit('connected', {
 /**
  * Room list
  */
-const RoomTab = (props) => {//function component
-    function roomTabClick(){
+class RoomTab extends React.Component {//function component
+    roomTabClick(){
         mobMaster();
-        
+
     }
-    return (
-        <a className="item active roomTab" data-rn={props.roomname} onClick={roomTabClick}>
+    render(){
+
+        return (
+            <a className="item active roomTab" data-rn={this.props.roomname} onClick={this.roomTabClick}>
             <span className="icon">
                 <i className="fa fa-inbox"></i>
             </span>
-            <span className="name">{props.roomname}</span>
-        </a>
-    );
+            <span className="name">{this.props.roomname}</span>
+            </a>
+        );
+    }   
 };
 
 
