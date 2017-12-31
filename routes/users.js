@@ -1,11 +1,12 @@
 module.exports = function (app, passport, db) {
-	//user
+
+	//user login front
 	app.get('/login', function (req, res) {
 		res.render('login', {
 			message: req.flash('loginMessage')
 		});
-
 	});
+
 	app.get('/register', function (req, res) {
 		if (!req.flash('prev')) {
 			//flash init
@@ -34,17 +35,31 @@ module.exports = function (app, passport, db) {
 	// 		});
 	// 	})(req, res, next);
 	// });
+
+	//user login api
 	app.post('/api/register/:type(web|json)', isValidSignup, passport.authenticate('local-signup', {
 		successRedirect: '/login',
 		failureRedirect: '/register',
 		failureFlash: true
 	}));
 
-	app.get('/addusername', isLoggedIn, function (req, res) {
+	// app.get('/api/register/:type(web|json)', function (req, res, next) {
+	// 	passport.authenticate('local-signup', function (err, user, info) {
+	// 		var stat = 400, msg = '';
+	// 		if (err) { stat = 500; msg = err; next(err); }
+	// 		if (!user) { stat = 403; msg = '!user'; return res.redirect('/login'); }
+	// 		req.logIn(user, function (err) {
+	// 			if (err) { return next(err); }
+	// 			return res.redirect('/app');
+	// 		});
+	// 	})(req, res, next);
+	// });
 
+	app.get('/addusername', isLoggedIn, function (req, res) {
+		//only usefull for post oauth
 	})
 	app.post('/addusername', isLoggedIn, function (req, res) {
-		
+		//only usefull for post oauth
 	})
 
 	app.post('/api/login/:type(web|json)', passport.authenticate('local-login', {
@@ -55,7 +70,7 @@ module.exports = function (app, passport, db) {
 
 
 	app.get('/profile', isLoggedIn, function (req, res) {
-		console.log()
+		console.log();
 		res.render('profile.ejs', {
 			user: req.user
 		});
@@ -78,7 +93,7 @@ module.exports = function (app, passport, db) {
 
 
 	//Utility functions
-	isLoggedIn: function isLoggedIn(req, res, next){
+	isLoggedIn: function isLoggedIn(req, res, next) {
 		console.log('check auth');
 		if (req.isAuthenticated()) {
 			console.log('isauth');
@@ -92,7 +107,8 @@ module.exports = function (app, passport, db) {
 		}
 		console.log('isNOTauth');
 		// if they aren't redirect them to the home page
-		res.redirect('/');
+		req.flash('loginMessage', req.flash('loginMessage')+ "You must login first.")
+		res.redirect('/login');
 	}
 
 	function isValidSignup(req, res, next) {

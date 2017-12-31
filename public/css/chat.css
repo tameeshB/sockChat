@@ -1,5 +1,5 @@
 html,body {
-  font-family: 'Open Sans', serif;
+  /* font-family: 'Open Sans', serif; */
   font-size: 14px;
   line-height: 1.5;
   height: 100%;
@@ -51,7 +51,7 @@ html,body {
 .messages {
   display:block;
   z-index: 1;
-  /* box-shadow: #000000 5px 1px 20px 2px; */
+ box-shadow: #000000 -5px -1px 20px 0px;
 }
 .message {
   display:block;
@@ -114,9 +114,8 @@ html,body {
   font-weight: 500;
 }
 
-
 .messages {
-  padding: 40px 20px;
+  padding: 15px 20px;
 }
 .message {
   padding: 40px 20px;
@@ -170,8 +169,13 @@ html,body {
   font-size: 15px;
   color: #AAAAAA;
 }
-.inbox-messages {
-  margin-top:60px;
+#inbox-messages {
+  /* margin-top:60px; */
+  max-height: 90%;
+  overflow-y: auto;
+}
+#inbox-messages .box{
+  margin-right:10px;
 }
 .message-preview {
   margin-top: 60px;
@@ -256,8 +260,47 @@ body{
   
 }
 #message-feed{
-      padding-bottom: 100px;
+      /* padding-bottom: 100px; */
 }
 a.panel-block:hover{
   background-color: #525252;
+}
+#roomsList>div>a{
+  margin-bottom: 20px;
+}
+#makeVisible{
+  bottom: 15px;
+  position: fixed;
+}
+#message-feed>div{
+  height:92%;
+
+}
+/* #inbox-messages{
+height: 100%;
+} */
+#currRoomName{
+  font-size: 2em;
+  color: #FFFFFF;
+  text-transform: capitalize;
+  /* padding-left: 40px; */
+}
+
+/* scrollbar */
+
+#inbox-messages::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #F5F5F5;
+  /* border-radius: 10px; */
+}
+
+#inbox-messages::-webkit-scrollbar {
+  width: 10px;
+  background-color: #F5F5F5;
+}
+
+#inbox-messages::-webkit-scrollbar-thumb {
+  background-color: #AAA;
+  border-radius: 10px;
+  background-image: -webkit-linear-gradient(90deg, rgba(0, 0, 0, .2) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, .2) 50%, rgba(0, 0, 0, .2) 75%, transparent 75%, transparent)
 }

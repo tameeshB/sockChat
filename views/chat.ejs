@@ -2,25 +2,45 @@
 	<title>SockChat |
 		<%= user.username %>
 	</title>
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script> -->
+	<!-- <script type="text/javascript" src="/js/angular.min.js"></script> -->
 	<link rel="stylesheet" type="text/css" href="/css/chat.css">
 	<script src="/socket.io/socket.io.js"></script>
 	<script>
-		var	myuser = '<%= user.username %>';
-	</script>
-	</head>
+		var myuser = '<%= user.username %>';
+		var userhash = '<%= user.hash %>';
+		$(document).ready(function () {
+				setInterval(function () {
+					$(".dynamicTimeStamp").each(function () {
+						$(this).text(moment.parseZone($(this).data('ts'), "ddd MMM DD YYYY HH:mm:ss Z").fromNow());
+					});
+				}, 60000)
 
+			});
+	</script>
+	<script src="/js/mobile.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.js"></script>
+	<script src="/js/react.production.min.js"></script>
+	<script src="/js/react-dom.production.min.js"></script>
+	<script src="/js/babel.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/5.0.5/react-redux.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.3.1/redux.min.js"></script>
+	<!-- @todo Feed these values directly to js -->
+	<script type="text/babel" src="/js/chat.js"></script>
+	</head>
 	<body>
 		<nav class="navbar has-shadow is-black" id="mainNav" style="position:fixed;z-index:100;width:100%">
 			<div class="container">
 				<div class="navbar-brand">
 					<img src="/images/back.png" height="10px" style="max-height: 30px;top: 10px;margin-top: 8px;margin-left: 10px;display:none;"
-					 id="backBthMob">
+					    id="backBthMob">
 					<a class="navbar-item" href="/about" id="branding_sockchat">
 						<img src="/images/logo/icon96.png">
 						<b>ock</b>Chat
 					</a>
 					<img src="/images/info.png" height="10px" style="max-height: 20px; top: 12px; position: absolute; right: 50px;display:none"
-					 id="infoBthMob">
+					    id="infoBthMob">
 					<div class="navbar-burger burger" data-target="navMenu">
 						<span></span>
 						<span></span>
@@ -61,94 +81,20 @@
 
 		<div class="columns" id="mail-app">
 			<aside class="column is-3 aside hero is-fullheight is-dark" id="conv-list">
-				<div>
-					<div class="compose has-text-centered">
-						<a class="button is-danger is-block is-bold">
-							<span class="compose">New Thread</span>
-						</a>
-					</div>
-					<div class="main">
-						<a href="#" class="item active">
-							<span class="icon">
-								<i class="fa fa-inbox"></i>
-							</span>
-							<span class="name">Common Channel</span>
-						</a>
-
-					</div>
-				</div>
+				
 			</aside>
 
 			<div class="column is-7 messages hero is-fullheight" id="message-feed">
 
-				<div class="inbox-messages" id="inbox-messages">
-					<% messages.forEach(function(msg){%>
-						<div class="box <%= (msg.user==user.username)?" mymsg ":"is-primary " %>">
-							<article class="media">
-								<div class="media-content">
-									<div class="content">
-										<p>
-											<strong>
-												<%= msg.user%>
-											</strong>
-											<small>@
-												<%= msg.user%>
-											</small>
-											<small></small>
-											<br>
-											<%= msg.message%>
-										</p>
-									</div>
-
-								</div>
-							</article>
-						</div>
-						<%})%>
-				</div>
-
-				<!-- <div class="field" id="messageSend">
-				<form action="">
-				<label class="label">Label</label>
-				<div class="control">
-					<input class="input" type="text" placeholder="Text input"><button class="button is-primary">Submit</button>
-				</div>
-				<div class="control">
-					
-				</div>
-				</form>
-
-			</div> -->
-				<div class="hero-foot" id="makeVisible" style="bottom: 0;display:none;position: fixed; margin-bottom:10px">
-					<div class="container">
-						<div class="tabs is-centered">
-							<div class="field has-addons" id="messageSend" style="width: 100%;">
-								<p class="control is-expanded">
-									<input class="input" id="msgTextBox" type="text" placeholder="<%= user.username %>: Enter Message here">
-								</p>
-								<p class="control ">
-									<a id="msgSendBtn" class="button is-primary">
-										Send
-									</a>
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
+				
+				
 			</div>
 
-			<div class="column is-2 messages hero is-fullheight is-black" id="feed-info">
+			<div class="column is-2 messages hero is-fullheight is-dark" id="feed-info">
 				<div class="column ">
 
 					<div class="panel" id="activeUserpanel">
-						<p class="panel-heading">
-							Active users
-						</p>
-
-						<span class="panel-block">
-							<span class="panel-icon">
-								<i class="fa fa-user"></i>
-							</span>
-						</span>
+						
 					</div>
 
 				</div>
@@ -159,13 +105,8 @@
 		</div>
 
 		</div>
-
-		<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.3/vue.min.js" integrity="sha256-5CEXP4Sh+bwJYBngjYYh2TEev9kTDwcjw60jZatTHtY="
-	 crossorigin="anonymous"></script> -->
-		<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js" integrity="sha256-QHdJObhDO++VITP6S4tMlDHRWMaUOk+s/xWIRgF/YY0="
-	 crossorigin="anonymous"></script> -->
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js" integrity="sha256-4PIvl58L9q7iwjT654TQJM+C/acEyoG738iL8B8nhXg="
-		 crossorigin="anonymous"></script>
-		<script src="/js/socket.js" type="text/javascript"></script>
-		<script src="/js/mobile.js"></script>
+		    crossorigin="anonymous"></script>
+		<!-- <script src="/js/socket.js" type="text/javascript"></script> -->
+		
 		<%- include footer.ejs %>

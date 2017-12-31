@@ -1,3 +1,4 @@
-global.roomsGL_id = {};
-global.roomsGL_name = {};
+global.roomsGL = [];
+global.roomsGL = [];
 global.userGL = {};
+//updating roomsGL and usersGL.rooms
