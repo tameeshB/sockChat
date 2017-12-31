@@ -173,6 +173,7 @@ class RoomsContainer extends React.Component {
     constructor(props) {
         super(props);
         this.switchRoom = this.switchRoom.bind(this);
+        this.newThreadPrompt = this.newThreadPrompt.bind(this);
     }
 //    this.props.data
 /*
@@ -229,7 +230,7 @@ class RoomsContainer extends React.Component {
                 if (data.status == 409) {
                     var roomPass = prompt("Enter the room access password", "Password here");
                 } else if (data.status == 200) {
-                    var roomPass = prompt("Enter desired password for new room. Leave blank for no password", "Password here");
+                    var roomPass = prompt("Enter desired password for new room. Leave blank for no password", "");
                 }else{
                     alert(data.message);
                     return;
@@ -241,8 +242,11 @@ class RoomsContainer extends React.Component {
                 });
                 socket.on('roomPassCheckRet',function(data_){
                     console.log(data_);
-                })
-            })
+                    if(data_.status!=200)
+                        return alert(data_.message);
+                    this.props.newRoom(data_.room.roomname);
+                }.bind(this))
+            }.bind(this))
         }
     }
     render() {//class component
@@ -250,7 +254,7 @@ class RoomsContainer extends React.Component {
             <div>
                 <div className="compose has-text-centered" id="newThreadParent">
                     <a onClick={this.newThreadPrompt} className="button is-danger is-block is-bold">
-                        <span className="compose">New Thread</span>
+                        <span className="compose">New/Join Thread</span>
                     </a>
                 </div>
                 <div className="main">

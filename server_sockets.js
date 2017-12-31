@@ -169,6 +169,8 @@ module.exports = function (app, io, db) {
 								id: newRoomId,
 								roomname: data.roomName
 							});
+							socketonline[data.roomName] = [socket.id];
+							online[data.roomName] = [socket.username];
 							socket.emit('roomPassCheckRet', {
 								status: 200,
 								message: 'Created new room!',
@@ -194,8 +196,7 @@ module.exports = function (app, io, db) {
 						if (newrooms_.indexOf(data.roomName) >= 0) {
 							//nothing
 						} else {
-							console.log('\x1b[36m%s\x1b[0m', "DID NOT DETECT ROOM");
-							//1) make subdoc unique. 
+							//1) make subdoc unique. @todo
 							//2) proper callback/async
 							//can add user to group
 							//@async
@@ -227,6 +228,14 @@ module.exports = function (app, io, db) {
 								}
 							})
 						}
+						if (socketonline[data.roomName])
+							socketonline[data.roomName].push(socket.id);
+						else
+							socketonline[data.roomName] = [socket.id];
+						if (online[data.roomName])
+							online[data.roomName].push(socket.username);
+						else
+							online[data.roomName] = [socket.username];
 						socket.emit('roomPassCheckRet', {
 							status: 200,
 							message: 'Joined room!',
