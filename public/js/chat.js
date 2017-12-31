@@ -361,17 +361,14 @@ const MsgBubble = (props) => {//function component
     //         return "box "
     // }
     return (
-        <div className={(props.user==myuser)?"box mymsg":"box is-primary"} >
-            <article className="media">
-                <div className="media-content">
-                    <div className="content" key={props._id}><p>
-                        <strong>{ props.user }</strong>
-                        <small>@{ props.user }</small>&nbsp;
-                        <small className="dynamicTimeStamp" data-ts={props.ts}>{moment.parseZone(props.ts, "ddd MMM DD YYYY HH:mm:ss Z").fromNow()}</small>
-                        <br />{ props.message }</p>
-                    </div>
-                </div>
-            </article>
+        
+        <div className={(props.user==myuser)?"bubble me":"bubble you"} >
+            <p>
+                <strong>{ props.user }</strong>
+                <small>@{ props.user }</small>&nbsp;
+                <small className="dynamicTimeStamp" data-ts={props.ts}>{moment.parseZone(props.ts, "ddd MMM DD YYYY HH:mm:ss Z").fromNow()}</small>
+                <br />{ props.message }
+            </p>
         </div>
     );
 };
@@ -404,7 +401,7 @@ class MsgThread extends React.Component {
                 {/* {JSON.stringify(this.props.messages_)} */}
                 {
                     (this.props.messages_ && this.props.messages_.length >0)?
-                    this.props.messages_.map(card => <MsgBubble {...card} />)
+                    this.props.messages_.map(card => <MsgBubble {...card}/>)
                     :<MsgBubbleZero />
                 }
             </div>
