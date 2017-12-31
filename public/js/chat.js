@@ -36,6 +36,7 @@ var reducer = function (state, action) {//@todo
     var newState = state;
     switch (action.type) {
         case 'change_room':
+            console.log("RoomChange",action.room);
             var newRoom = action.room;
             newState = Object.assign({}, state, { currentRoom: newRoom });
             break;
@@ -170,9 +171,13 @@ socket.emit('connected', {
  * Room list
  */
 class RoomTab extends React.Component {//function component
+    constructor(props) {
+        super(props);
+        this.roomTabClick = this.roomTabClick.bind(this);
+    }
     roomTabClick(){
         mobMaster();
-
+        this.props.changeRoom(this.props.roomname);
     }
     render(){
 
@@ -461,7 +466,7 @@ class OnlineUsers extends React.Component {
                 Active users
             </p>
             <div>
-                    {this.props.onlineUsers.map(onlineUser => <OnlineUser  />)}
+                {this.props.onlineUsers.map(onlineUser => <OnlineUser  />)}
             </div>
             </div>
         );
@@ -472,6 +477,10 @@ RoomsContainer = connect(
     RoomListState,
     RoomDispatch
 )(RoomsContainer)
+RoomTab = connect(
+    RoomListState,
+    RoomDispatch
+)(RoomTab)
 MessageArea = connect(
     MessagesState,
     RoomDispatch
