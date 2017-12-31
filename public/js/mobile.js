@@ -1,7 +1,12 @@
+// console.log('mob attach');
+console.log($(window).width());
+function mobMaster(){
 if($(window).width()<900){
+    console.log('ismob');
     var g_state=0;
     $("#makeVisible").hide();
-    $("#conv-list a").click(function(){
+    $(".roomTab").click(function(){
+        console.log('roomtab clicked');
         $("#conv-list").fadeOut();
         $("#message-feed").fadeIn();
         // $("#infoBthMob").fadeIn(); 
@@ -47,4 +52,5 @@ if($(window).width()<900){
 
     })
 
+}
 }

@@ -170,8 +170,13 @@ html,body {
   font-size: 15px;
   color: #AAAAAA;
 }
-.inbox-messages {
+#inbox-messages {
   /* margin-top:60px; */
+  max-height: 90%;
+  overflow-y: auto;
+}
+#inbox-messages .box{
+  margin-right:10px;
 }
 .message-preview {
   margin-top: 60px;
@@ -265,19 +270,38 @@ a.panel-block:hover{
   margin-bottom: 20px;
 }
 #makeVisible{
-  bottom: 0;
+  bottom: 15px;
   position: fixed;
 }
 #message-feed>div{
   height:92%;
 
 }
-#inbox-messages{
+/* #inbox-messages{
 height: 100%;
-}
+} */
 #currRoomName{
   font-size: 2em;
   color: #FFFFFF;
   text-transform: capitalize;
   padding-left: 40px;
+}
+
+/* scrollbar */
+
+#inbox-messages::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #F5F5F5;
+  /* border-radius: 10px; */
+}
+
+#inbox-messages::-webkit-scrollbar {
+  width: 10px;
+  background-color: #F5F5F5;
+}
+
+#inbox-messages::-webkit-scrollbar-thumb {
+  background-color: #AAA;
+  border-radius: 10px;
+  background-image: -webkit-linear-gradient(90deg, rgba(0, 0, 0, .2) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, .2) 50%, rgba(0, 0, 0, .2) 75%, transparent 75%, transparent)
 }

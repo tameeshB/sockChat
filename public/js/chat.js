@@ -1,7 +1,18 @@
+
 // const { Provider } = ReactRedux;
 var createStore = Redux.createStore;
 var Provider = ReactRedux.Provider;
 var connect = ReactRedux.connect;
+
+/**
+ * UI functions
+ */
+
+function keepAtBottom() {
+    $("#inbox-messages").animate({
+        scrollTop: $('#inbox-messages').prop("scrollHeight")
+    }, 500);
+}
 /**
  * ~~Redux~~
  * 
@@ -11,14 +22,9 @@ var initialState = {
     data: [],
     rooms: [],
     // users: [],
-    messages: [{
-        message: "aaa", 
-        room :"test", 
-        ts: "Sat Dec 30 2017 04:27:37 GMT+0530 (IST)",
-        user : "testBitMore"
-    }],
+    messages: [],
     onlineUsers: [],
-    currentRoom: "",
+    currentRoom: "welcome",
     url: "/api/comments",
     pollInterval: 2000
 }
@@ -43,12 +49,32 @@ var reducer = function (state, action) {//@todo
             // newState = Object.assign({}, state, { rooms: newRooms }) //@todo
             break; 
         case 'add_message':
-            var newMessages = state.messages.concat([action.message]);
-            newState = Object.assign({}, state, { messages: newMessages })
+            var msgRoomObj = state.messages;
+            console.log("pr", JSON.stringify(msgRoomObj).length, JSON.stringify(newState).length);
+            if (msgRoomObj[action.message.room]) {
+                msgRoomObj[action.message.room] = msgRoomObj[action.message.room].concat([action.message]);
+            } else {
+                msgRoomObj[action.message.room] = [action.message];
+            }
+            newState = Object.assign({}, state, { messages: msgRoomObj })
+            console.log("po", JSON.stringify(msgRoomObj).length, JSON.stringify(newState).length);
+            keepAtBottom();
             break;
         case 'new_messages':
-            // var newRooms = state.rooms.concat([action.rooms]);
-            newState = Object.assign({}, state, { messages: action.messages })
+            var msgRoomObj = state.messages;
+            // msgRoomObj["aaa"] = [{ message: "aaa", room: "aaa", ts: "Sun Dec 31 2017 06:02:15 GMT+0530 (IST)" }]
+            action.messages.forEach(function(msg){
+                if (msgRoomObj[msg.room]){
+                    msgRoomObj[msg.room] = msgRoomObj[msg.room].concat(msg);
+                }else{
+                    msgRoomObj[msg.room] = [msg];
+                }
+            });
+            newState = Object.assign({}, state, { messages: msgRoomObj});
+            setTimeout(() => {
+                keepAtBottom();
+            }, 500);
+            
             break;
     }
     return newState;
@@ -68,7 +94,7 @@ var RoomListState = function (state) {
 var MessagesState = function (state) {
     return {
         currentRoom: state.currentRoom,
-        messages: state.messages
+        messages: state.messages[state.currentRoom]
     }
 }
 
@@ -110,7 +136,7 @@ var RoomDispatch = function (dispatch) {
             // comment.id = Date.now();
             dispatch({
                 type: 'add_message',
-                room: message,
+                message: message,
             })
         },
         newMessages: function (messages) {
@@ -144,8 +170,12 @@ socket.emit('connected', {
  * Room list
  */
 const RoomTab = (props) => {//function component
+    function roomTabClick(){
+        mobMaster();
+        
+    }
     return (
-        <a className="item active" data-rn={props.roomname}>
+        <a className="item active roomTab" data-rn={props.roomname} onClick={roomTabClick}>
             <span className="icon">
                 <i className="fa fa-inbox"></i>
             </span>
@@ -159,7 +189,7 @@ class Rooms extends React.Component {
     render() {//class component
         return (
             <div>
-                {this.props.rooms_.map(room_ => <RoomTab roomname={room_} onClick={this.props.switchRoomEv} />)}
+                {this.props.rooms_.map(room_ => <RoomTab roomname={room_}  />)}
             </div>
         );
     }
@@ -318,14 +348,18 @@ class MsgBox extends React.Component {
  * Message thread
  */
 const MsgBubble = (props) => {//function component
+    // function classNames(){
+    //     if (props.user == myuser)
+    //         return "box "
+    // }
     return (
-        <div className="box is-primary" >
+        <div className={(props.user==myuser)?"box mymsg":"box is-primary"} >
             <article className="media">
                 <div className="media-content">
                     <div className="content" key={props._id}><p>
                         <strong>{ props.user }</strong>
                         <small>@{ props.user }</small>&nbsp;
-                        <small>{props.time}</small>
+                        <small className="dynamicTimeStamp" data-ts={props.ts}>{moment.parseZone(props.ts, "ddd MMM DD YYYY HH:mm:ss Z").fromNow()}</small>
                         <br />{ props.message }</p>
                     </div>
                 </div>
@@ -372,6 +406,9 @@ class MsgThread extends React.Component {
 
 
 class MessageArea extends React.Component {
+    constructor(props) {
+        super(props);
+    }
     // addMessage,newMessages //write using socket.io
     /*
     Props that hold state:
@@ -433,7 +470,8 @@ RoomsContainer = connect(
     RoomDispatch
 )(RoomsContainer)
 MessageArea = connect(
-    MessagesState
+    MessagesState,
+    RoomDispatch
 )(MessageArea)
 OnlineUsers = connect(
     RoomInfoState
