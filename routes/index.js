@@ -29,6 +29,10 @@ module.exports = function (app, passport, db) {
 		switch (req.params.id){
 			case 'localStorage':
 				incompatContent = 'Your browser doesn\'t support a stable version of localStorage. The crypto features will not be available rendering gibberish text insead of messages.'; 
+			break;
+			case 'clientIDErr':
+				incompatContent = 'There was a problem generating client keys for your device.';
+			break;
 		}
 		res.render('incompat', {
 			content : incompatContent,
@@ -36,42 +40,24 @@ module.exports = function (app, passport, db) {
 		});
 	});
 
-	app.post('/crypto/getNewClientID', function(req, res){
+	app.post('/crypto/getNewClientID',isLoggedIn, function(req, res){
 		var ts,state=1; 
 		var usrStr = "";
-		while(state==1){
-			ts = Date.now();
-			db.keys.find(
-				{ "devices.cid" : ts },function(err, dat){
-					if(!dat){
-						var dbObj = {
-							cid : ts,
-							key: req.body.pubKey
-						};
-						state=0;
-						db.keys.update(
-							{ username: req.body.username },
-							{ $push: { devices: dbObj } },
-							{ upsert : true },
-							function(err, dat){
-								if(err)
-									res.json({status:401, message: err, cid: -1});
-								else{
-									res.json({ status: 200, message: "Successfully registered", cid: ts });
-								}
-							}
-						)
-					}
-					else if(err){
-						console.log(err);
-						state = 0;
-						res.json({ status: 401, message: err, cid: -1 });
-					}
-				});
-		}
+		ts = Date.now();
 		
-		
-		
+		state=0;
+		db.keys.insert({
+			username: req.user.username,
+			cid: ts,
+			key: req.body.pubKey},
+			function(err, dat){
+				if(err)
+					res.json({status:401, message: err, cid: -1});
+				else{
+					res.json({ status: 200, message: "Successfully registered", cid: ts });
+				}
+			}
+		)
 	})
 	
 	//Utility functions
@@ -89,7 +75,13 @@ module.exports = function (app, passport, db) {
 		console.log('isNOTauth');
 		// if they aren't redirect them to the home page
 		req.flash('loginMessage', req.flash('loginMessage') + "You must login first.")
-		res.redirect('/login');
+		if (req.accepts('html', 'json') === 'json') {
+			console.log('json');
+			res.json({ status: 403, message: JSON.stringify(req.flash('loginMessage'))})
+		}else{
+			console.log('acc', req.accepts('html', 'json'))
+			res.redirect('/login');
+		}
 	}
 
 

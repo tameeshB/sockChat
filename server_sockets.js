@@ -9,6 +9,24 @@ module.exports = function (app, io, db) {
 	//sockets
 	var socketonline = [];//socketid per room online
 
+	function createRandomString(callback, length) {
+		var randomBase64String = '',
+			checkReadyness;
+
+		checkReadyness = setInterval(function () {
+			if (sjcl.random.isReady(10)) {
+				while (randomBase64String.length < length) {
+					randomInt = sjcl.random.randomWords(1, 10)[0];
+					randomBase64String += btoa(randomInt);
+				}
+				randomBase64String = randomBase64String.substr(0, length);
+				callback(randomBase64String);
+				clearInterval(checkReadyness);
+			}
+		}, 1);
+	}
+
+	
 	io.sockets.on('connection', function (socket) {
 		connections.push(socket);
 		console.log('connected %s', connections.length);
@@ -149,38 +167,41 @@ module.exports = function (app, io, db) {
 				}
 				if (!doc) {
 					console.log("_nodoc");
-					db.rooms.insert({
-						'roomname': data.roomName,
-						'password': genHash(data.password),
-						'users': [socket.username]
-					}, function (err, inserted) {
-						newRoomId = inserted._id;
-						db.users.update({
-							username: socket.username
-						}, {
-							$push: {
-								rooms: {
+					createRandomString(function(randomSalt){
+						db.rooms.insert({
+							'roomname': data.roomName,
+							'password': genHash(data.password),
+							'users': [socket.username],
+							'salt': randomSalt
+						}, function (err, inserted) {
+							newRoomId = inserted._id;
+							db.users.update({
+								username: socket.username
+							}, {
+								$push: {
+									rooms: {
+										id: newRoomId,
+										roomname: data.roomName
+									}
+								}
+							}, function (err, data__) { //callback
+								roomsGL.push({
 									id: newRoomId,
 									roomname: data.roomName
-								}
-							}
-						}, function (err, data__) { //callback
-							roomsGL.push({
-								id: newRoomId,
-								roomname: data.roomName
-							});
-							socketonline[data.roomName] = [socket.id];
-							online[data.roomName] = [socket.username];
-							socket.emit('roomPassCheckRet', {
-								status: 200,
-								message: 'Created new room!',
-								newId: newRoomId,
-								room: inserted
-							});
-							console.log("inserted", inserted);
-						})
+								});
+								socketonline[data.roomName] = [socket.id];
+								online[data.roomName] = [socket.username];
+								socket.emit('roomPassCheckRet', {
+									status: 200,
+									message: 'Created new room!',
+									newId: newRoomId,
+									room: inserted
+								});
+								console.log("inserted", inserted);
+							})
 
-					});
+						});
+					}, 15);
 				} else {
 					var hash_pass = genHash(data.password);
 					console.log(hash_pass);

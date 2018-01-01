@@ -56,6 +56,10 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 
 // app.use(session({ secret: 'tameeshb' })); // session secret
 
+// app.use(function (req, res, next) {
+//   req.wantsJSON = req.accepts('html', 'json') === 'json';
+//   req.wantsHTML = req.accepts('html', 'json') === 'HTML';
+// })
 
 // Express Validator
 app.use(expressValidator({
