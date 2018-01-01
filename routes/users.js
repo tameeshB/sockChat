@@ -2,12 +2,16 @@ module.exports = function (app, passport, db) {
 
 	//user login front
 	app.get('/login', function (req, res) {
+		if (req.user && req.user.username)
+			res.redirect('/app');
 		res.render('login', {
 			message: req.flash('loginMessage')
 		});
 	});
 
 	app.get('/register', function (req, res) {
+		if (req.user && req.user.username)
+			res.redirect('/app');
 		if (!req.flash('prev')) {
 			//flash init
 			var prev = {
